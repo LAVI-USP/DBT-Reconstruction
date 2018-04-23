@@ -71,13 +71,13 @@ for p=1:numProjs
     % Get specif tube angle for the projection
     teta = tubeAngle(p);
     
-    % Temporary projection variable to acumulate all slices
+    % Temporary projection variable to acumulate all projection from the slices
     proj_tmp = zeros(numVPixels,numUPixels,'single');
     
     % For each slice
     for nz=sliceRange(1):sliceRange(end)
           
-        % Calc of Detector Coordinates on the Voxels Coordinates relation
+        % Calculates a relation of detector and voxel coordinates
         pyCoord = ((vCoord.*((DSR.*cos(teta))+DDR-zCoords(nz)))-(zCoords(nz).*DSR.*sin(teta)))./...
                                             (DSR.*cos(teta)+DDR);
         
@@ -98,15 +98,15 @@ for p=1:numProjs
             draw3d(xCoord,yCoord,zCoord,puCoord,pvCoord,param,p,teta);
         end              
              
-        % Slice plane axis origin
+        % Coordinate in Pixel of slice plane axis origin
         x0 = numXVoxels;
         y0 = numYVoxels/2;
         
-        % Move Img plane axis to Slice plane axis and covert (mm) to Pixels
+        % Represent slice plane axis (X,Y) in the image plane axis (i,j) (covert mm to Pixels)
         pxCoord = -(pxCoord./param.dx) + x0;
         pyCoord =  (pyCoord./param.dy) + y0;  
       
-        % Associate Data3D value with projected points pixel coordinates and interpolate 
+        % Interpolation of the pixel coordinates of the "Slice" at the calculated pixel coordinates for the detector
         proj_tmp = proj_tmp + interp2(data3d(:,:,nz),pxCoord,pyCoord,'linear',0);
               
     end % Loop end slices

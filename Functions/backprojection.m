@@ -79,22 +79,23 @@ for p=1:numProjs
     % For each slice
     for nz=sliceRange(1):sliceRange(end)
 
-        % Calc of Voxel Coordinates on the Detector Coordinates relation
+        % Calculates a relation of voxel and detector coordinates
         pvCoord = yCoord(iROI,jROI)+((zCoords(nz).*((DSR.*sin(teta))+ yCoord(iROI,jROI)))./...
                         ((DSR.*cos(teta))+ DDR -zCoords(nz)));
                 
         puCoord = (xCoord(iROI,jROI).*((DSR.*cos(teta))+DDR))./ ...
                  ((DSR.*cos(teta))+DDR-zCoords(nz));
                 
-        % Detector plane axis origin
+        % Coordinate in Pixel of detector plane axis origin
         u0 = numUPixels;
         v0 = numVPixels/2;
         
-        % Move Img plane axis to Detector plane axis and covert (mm) to Pixels
+        % Represent detector plane axis (Xi,Yi) in the image plane axis (i,j) (covert mm to Pixels)
         puCoord = -(puCoord./param.du) + u0;
         pvCoord =  (pvCoord./param.dv) + v0;      
         
-        % Associate Projection values with Voxels coordinates and interpolate
+        % Interpolation of the pixel coordinates of the "Projection" at the
+        % calculated pixel coordinates for the slices
         slice_tmp = interp2(proj_tmp,puCoord,pvCoord,'linear',0);       
         
         % Acumulate current slice with slice from previus projection
@@ -103,4 +104,5 @@ for p=1:numProjs
     end % Loop end slices 
     
 end % Loop end Projections
+data3d(:) = data3d(:)./ numProjs;
 end
