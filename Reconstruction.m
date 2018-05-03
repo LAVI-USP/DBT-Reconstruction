@@ -43,7 +43,7 @@ close all;clear;clc
 showinfo = uint8(1);        % Show projection animation
 saveinfo = uint8(1);        % Save reconstructed volume
 
-%% Data decision
+%% GUI - Data decision
 
 answer = questdlg('Load Dicom file or create a virtual Phantom?', ...
 	'Data decision', ...
@@ -88,8 +88,7 @@ if(data == 1)   %           ** Dicom data **
         display(' Cancelled by user.');
     	return;
     else
-        userpath(path_ProjData)
-        display(' Starting reconstruction...');
+        userpath(path_ProjData)       
         
         [dataProj,infoDicom] = readDicom(path_ProjData);
         parameter.bitDepth = infoDicom(:,1).BitDepth;
@@ -103,7 +102,7 @@ else    %                   ** Phantom data **
 
     % Create Shepp-Logan phantom
     data3d = single(phantom3d('Modified Shepp-Logan', parameter.nz));   
-    data3d(data3d<0) = 0.005;
+    data3d(data3d<0) = eps;
 
     % Make the Projections
     if(showinfo || saveinfo)
@@ -119,9 +118,10 @@ else    %                   ** Phantom data **
         load proj.mat
     end
 end
+display(' Starting reconstruction...');
  %% Set specific recon parameters
 
-nIter = [5,10,15,20];       % Iteration to be saved (In case of MLEM)
+nIter = [5,6];       % Iteration to be saved (In case of MLEM)
 filterType = uint8(1);      % Filter type (In case of FBP) -> 0 - No filter  1 - Filter
 
 %% Reconstruction methods
@@ -133,11 +133,21 @@ if(saveinfo)
 end
 
 %                       ** Uncomment to use **
+% [dataRecon3d,time] = SART(dataProj,nIter,parameter,showinfo);
+% if(saveinfo)
+%     save('res/ReconSART.mat','dataRecon3d','-v7.3')
+%     xlswrite('res/SART_IterValues',time)   
+% end
+
+%                       ** Uncomment to use **
 % [dataRecon3d,time] = MLEM(dataProj,nIter,parameter,showinfo);
 % if(saveinfo)
 %     save('res/ReconMLEM.mat','dataRecon3d','-v7.3')
 %     xlswrite('res/MLEM_IterValues',time)   
 % end
+
+display(' Finished');
+display(' Please, check "res" folder for results');
 
 %% Show info
 
@@ -155,5 +165,3 @@ if(showinfo && data == 2)
         pause(0.08)
     end
 end
-display(' Finished');
-display(' Please, check "res" folder for results');

@@ -1,14 +1,14 @@
 %% Author: Rodrigo de Barros Vimieiro
-% Date: April, 2018
+% Date: May, 2018
 % rodrigo.vimieiro@gmail.com
 % =========================================================================
 %{
 ---------------------------------------------------------------------------
-                MLEM(proj,nIter,parameter,showinfo)
+                SART(proj,nIter,parameter,showinfo)
 ---------------------------------------------------------------------------
     DESCRIPTION:
     This function reconstruct iteratively the volume through 
-    Maximum-Likelihood Expectation-Maximization (MLEM) method.
+    Simultaneous Algebraic Reconstruction Technique (SART) method.
     
     The geometry is for DBT with half cone-beam. All parameters are set in 
     "ParameterSettings" code. 
@@ -25,8 +25,7 @@
     - allreconData3d = Cell with Volumes of each specific iteration.
     - allIterTime = time of all iterations
 
-    Reference: Medical Image Reconstruction A Conceptual Tutorial - 
-    Gengsheng Lawrence Zeng (2010)
+    Reference: Three-Dimensional Digital Tomosynthesis - Yulia Levakhina (2014)
 
     -----------------------------------------------------------------------
     Copyright (C) <2018>  <Rodrigo de Barros Vimieiro>
@@ -45,41 +44,43 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %}
 % =========================================================================
-%% Recon Code -  Iterative reconstruction: MLEM
-function [allreconData3d,allIterTime] = MLEM(proj,nIter,parameter,showinfo)
+%% Recon Code -  Iterative reconstruction: SART
+function [allreconData3d,allIterTime] = SART(proj,nIter,parameter,showinfo)
 
 highestValue = (2^parameter.bitDepth) - 1;
 
 allIterTime = zeros(nIter(end),1);   % Time data for each iteration
 allreconData3d = cell(1,size(nIter,2)); % Recon data for each iteration
 
-% Initial estimated volume data 
+% Initial estimated data 
 reconData3d = zeros(parameter.ny, parameter.nx, parameter.nz,'single');
-reconData3d(parameter.iROI,parameter.jROI,parameter.sliceRange) = 1;
 
-% Volume normalization
+% Pre calculation of Projection normalization
+proj_norm = projection(ones(parameter.ny, parameter.nx, parameter.nz, 'single'),parameter,0);
+
+% Pre calculation of Backprojection normalization
 vol_norm = backprojection(ones(parameter.nv, parameter.nu, parameter.nProj, 'single'), parameter);
 
 if(showinfo)
-    fprintf('Starting MLEM Iterations... \n\n')
+    fprintf('Starting SART Iterations... \n\n')
 end
 
 % Start Iterations
 for iter = 1:nIter(end)
-    
     tStart = tic;
     
-    % Error ratio between raw data and projection of estimated data  
-    proj_ratio = proj./projection(reconData3d,parameter,0);
-    proj_ratio(isnan(proj_ratio)) = 0;
-    proj_ratio(isinf(proj_ratio)) = 0;
-
-    upt_term = backprojection(proj_ratio, parameter);
-    upt_term = upt_term ./vol_norm; % Volume normalization
-    upt_term(isnan(upt_term)) = 0;  
+    proj_diff = projection(reconData3d,parameter,0) - proj; % Error between raw data and projection of estimated data  
+    
+    proj_diff = proj_diff ./ proj_norm; % Projection normalization
+    proj_diff(isnan(proj_diff)) = 0;
+    proj_diff(isinf(proj_diff)) = 0;
+    
+    upt_term = backprojection(proj_diff, parameter);
+    upt_term = upt_term ./ vol_norm; % Volume normalization
+    upt_term(isnan(upt_term)) = 0;
     upt_term(isinf(upt_term)) = 0;
 
-    reconData3d = reconData3d.*upt_term; % Updates the previous estimation 
+    reconData3d = reconData3d - upt_term; % Updates the previous estimation 
     
     allIterTime(iter,1) = toc(tStart);
     
@@ -96,5 +97,5 @@ for iter = 1:nIter(end)
         fprintf('Itaration %d Time: %.2f\n\n',iter,toc(tStart));  
     end
     
-end% Loop end iterations
+end
 end

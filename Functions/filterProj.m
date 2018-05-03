@@ -63,7 +63,7 @@ for i=1:param.nProj
     filteredProj(:,:,i) = proj(:,:,i).* weightFunction;
 end
 
-% Increase filter length to the power 2 size 
+% Increase filter length to two times nv 
 h_Length = 2^nextpow2(2*param.nv);
 
 % Builds ramp filter in space domain
