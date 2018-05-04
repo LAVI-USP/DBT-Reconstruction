@@ -39,9 +39,13 @@
 %%                      Reconstruction Code                              %%
 close all;clear;clc
 
-% Global parameters
+%% Global parameters
+global showinfo saveinfo animation gpuprocess
+
 showinfo = uint8(1);        % Show projection animation
 saveinfo = uint8(1);        % Save reconstructed volume
+animation = uint8(1);       % Graphical animation
+gpuprocess = uint8(0);      % Pprocessing on GPU
 
 %% GUI - Data decision
 
@@ -51,16 +55,15 @@ answer = questdlg('Load Dicom file or create a virtual Phantom?', ...
 % Handle response
 switch answer
     case 'Dicom'
-        disp(' Waiting for Dicom files.')
+        fprintf('Waiting for Dicom files \n')
         data = 1;
     case 'Phantom'
-        disp(' Creating a virtual phantom.')
+        fprintf('Creating a virtual phantom \n')
         data = 2;
     otherwise
-        display('Cancelled by user.');
+        fprintf('Cancelled by user \n');
     	return;    
 end
-
 
 %% Load components
 
@@ -79,13 +82,17 @@ if(data == 1)   %           ** Dicom data **
     
     ParameterSettings_GE
            
+    if(~exist('res/Dicom','dir'))
+        mkdir('res/Dicom')
+    end
+    
     % Load Projection Data    
     uiwait(msgbox('Select the path of projection Dicom files.','Dicom','Warn'));
     path_User = userpath;
     path_ProjData = uigetdir(path_User(1:end-1)); 
     
     if(path_ProjData == 0)
-        display(' Cancelled by user.');
+        fprintf('Cancelled by user \n');
     	return;
     else
         userpath(path_ProjData)       
@@ -99,59 +106,74 @@ if(data == 1)   %           ** Dicom data **
 else    %                   ** Phantom data **
     
     ParameterSettings_Phantom;
+    
+    if(~exist('res/Phantom','dir'))
+        mkdir('res/Phantom')
+    end
+    addpath('res/Phantom');
 
     % Create Shepp-Logan phantom
     data3d = single(phantom3d('Modified Shepp-Logan', parameter.nz));   
     data3d(data3d<0) = eps;
 
     % Make the Projections
-    if(showinfo || saveinfo)
+    if(animation || saveinfo)
         % Create a figure of screen size
         figureScreenSize()
-        dataProj = projection(data3d,parameter,showinfo);
+        dataProj = projection(data3d,parameter);
         if(saveinfo)
-            save('res/proj.mat','dataProj')
+            save('res/Phantom/proj.mat','dataProj')
         else
             load proj.mat
         end
     else
         load proj.mat
     end
+    
 end
-display(' Starting reconstruction...');
- %% Set specific recon parameters
 
-nIter = [5,6];       % Iteration to be saved (In case of MLEM)
-filterType = uint8(1);      % Filter type (In case of FBP) -> 0 - No filter  1 - Filter
+if(gpuprocess)
+    fprintf(2,'Processing on GPU \n');
+end
+fprintf('Starting reconstruction \n');
+
+%% Set specific recon parameters
+
+nIter = [4,5];          % Iteration to be saved (In case of MLEM or SART)
+filterType = 'FBP';     % Filter type: 'BP', 'FBP'
 
 %% Reconstruction methods
 
 %                       ** Uncomment to use **
 [dataRecon3d,time] = FBP(dataProj,filterType,parameter);
 if(saveinfo)
-    save('res/ReconFBP.mat','dataRecon3d')
+    filestring = ['res/',answer,'/Recon',filterType,int2str(gpuprocess)];
+    save(filestring,'dataRecon3d')
+    xlswrite(filestring,time)
 end
 
 %                       ** Uncomment to use **
-% [dataRecon3d,time] = SART(dataProj,nIter,parameter,showinfo);
+% [dataRecon3d,time] = SART(dataProj,nIter,parameter);
 % if(saveinfo)
-%     save('res/ReconSART.mat','dataRecon3d','-v7.3')
-%     xlswrite('res/SART_IterValues',time)   
+%     filestring = ['res/',answer,'/ReconSART',int2str(gpuprocess)];
+%     save(filestring,'dataRecon3d','-v7.3')
+%     xlswrite(filestring,time)   
 % end
 
 %                       ** Uncomment to use **
-% [dataRecon3d,time] = MLEM(dataProj,nIter,parameter,showinfo);
+% [dataRecon3d,time] = MLEM(dataProj,nIter,parameter);
 % if(saveinfo)
-%     save('res/ReconMLEM.mat','dataRecon3d','-v7.3')
-%     xlswrite('res/MLEM_IterValues',time)   
+%     filestring = ['res/',answer,'/ReconMLEM',int2str(gpuprocess)];
+%     save(filestring,'dataRecon3d','-v7.3')
+%     xlswrite(filestring,time)  
 % end
 
-display(' Finished');
-display(' Please, check "res" folder for results');
+fprintf('Finished \n');
+fprintf('Please, check "res" folder for results \n');
 
 %% Show info
 
-if(showinfo && data == 2)
+if(animation && data == 2)
     % Create a figure of screen size
     figureScreenSize()
     % 3D Backprojection Visualization

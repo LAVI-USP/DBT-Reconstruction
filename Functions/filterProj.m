@@ -46,17 +46,25 @@
 %% Filtering Code
 function filteredProj = filterProj(proj,param)
 
-filteredProj = zeros(size(proj),'single');
+global gpuprocess
+
+if(gpuprocess == 0)
+    filteredProj = zeros(size(proj),'single');
+else
+    filteredProj = zeros(size(proj),'single','gpuArray');
+end
 
 % Detector Coordinate sytem in (mm)
-[uu,vv] = meshgrid(param.us,param.vs);
+[uCoord,vCoord] = meshgrid(param.us,param.vs);
 
-% Jiang Hsieh's book (second edition,page 97)
-% w = (param.DSD)./sqrt((param.DSD)^2+uu.^2 + vv.^2);
+if(gpuprocess == 1)
+    uCoord = gpuArray(single(uCoord));
+    vCoord = gpuArray(single(vCoord));
+end
 
 % Compute weighted projections (Fessler Course Eq. (3.9.32))
-weightFunction = (param.DSO.*sqrt(1+((uu./param.DSD).^2)))./...
-                   (sqrt((param.DSD.^2)+(vv.^2)+(uu.^2)));
+weightFunction = (param.DSO.*sqrt(1+((uCoord./param.DSD).^2)))./...
+                   (sqrt((param.DSD.^2)+(vCoord.^2)+(uCoord.^2)));
 
 % Apply weighting function on each proj
 for i=1:param.nProj
@@ -75,11 +83,16 @@ H_filter = filter_window(ramp_kernel, h_Length);
 % Replicate to all colluns to build a 2D filter kernel
 H_filter = repmat(H_filter',1,param.nu);
 
+% Proj in freq domain
+if(gpuprocess == 0)
+    H_proj = (zeros(h_Length,param.nu,'single'));
+else
+    H_proj = (zeros(h_Length,param.nu,'single','gpuArray'));
+end
+
 % Filter each projection
 for i=1:param.nProj
-    
-   H_proj = (zeros(h_Length,param.nu,'single'));
-    
+     
    H_proj(1:param.nv,:) = filteredProj(:,:,i);
 
    % Fourier transfor in projections
@@ -94,8 +107,6 @@ for i=1:param.nProj
    filteredProj(:,:,i) = H_proj(1:param.nv,:);
 
 end
-
-
 end
 
 %% Function Ramp Filter
@@ -105,8 +116,15 @@ Reference: Jiang Hsieh's book (second edition,page 73)
 Reference: Fessler Course Eq.(3.4.14)
 %}
 function h = ramp_builder(h_Length)
+
+global gpuprocess
+
 n = (-(h_Length/2):(h_Length/2-1));
-h = zeros(size(n),'single');
+if(gpuprocess == 0)
+    h = zeros(size(n),'single');
+else
+    h = zeros(size(n),'single','gpuArray');
+end
 h(h_Length/2+1) = 1;    % Eq.(3.4.14)
 odd = mod(n,2) == 1;    % Eq.(3.4.14)
 h(odd) = -1 ./ (pi * n(odd)./2).^2; % Eq.(3.4.14)

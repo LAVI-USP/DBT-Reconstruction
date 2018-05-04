@@ -4,7 +4,7 @@
 % =========================================================================
 %{
 ---------------------------------------------------------------------------
-                SART(proj,nIter,parameter,showinfo)
+                      SART(proj,nIter,parameter)
 ---------------------------------------------------------------------------
     DESCRIPTION:
     This function reconstruct iteratively the volume through 
@@ -18,7 +18,6 @@
     - proj  = 2D projection images 
     - nIter = Specific iterations to save volume data 
     - parameter = Parameter of all geometry
-    - showinfo = Show information on Command Window
 
     OUTPUT:
 
@@ -45,7 +44,9 @@
 %}
 % =========================================================================
 %% Recon Code -  Iterative reconstruction: SART
-function [allreconData3d,allIterTime] = SART(proj,nIter,parameter,showinfo)
+function [allreconData3d,allIterTime] = SART(proj,nIter,parameter)
+
+global showinfo animation
 
 highestValue = (2^parameter.bitDepth) - 1;
 
@@ -56,20 +57,22 @@ allreconData3d = cell(1,size(nIter,2)); % Recon data for each iteration
 reconData3d = zeros(parameter.ny, parameter.nx, parameter.nz,'single');
 
 % Pre calculation of Projection normalization
-proj_norm = projection(ones(parameter.ny, parameter.nx, parameter.nz, 'single'),parameter,0);
+tempvar = animation; animation = 0; 
+proj_norm = projection(ones(parameter.ny, parameter.nx, parameter.nz, 'single'),parameter);
+animation = tempvar; clear tempvar;
 
 % Pre calculation of Backprojection normalization
 vol_norm = backprojection(ones(parameter.nv, parameter.nu, parameter.nProj, 'single'), parameter);
 
 if(showinfo)
-    fprintf('Starting SART Iterations... \n\n')
+    fprintf('----------------\nStarting SART Iterations... \n\n')
 end
 
 % Start Iterations
 for iter = 1:nIter(end)
     tStart = tic;
     
-    proj_diff = projection(reconData3d,parameter,0) - proj; % Error between raw data and projection of estimated data  
+    proj_diff = projection(reconData3d,parameter) - proj; % Error between raw data and projection of estimated data  
     
     proj_diff = proj_diff ./ proj_norm; % Projection normalization
     proj_diff(isnan(proj_diff)) = 0;

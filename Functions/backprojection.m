@@ -48,11 +48,21 @@
 %% Backprojection Code
 function data3d = backprojection(proj,param)
 
+global gpuprocess
+
 % Stack of reconstructed slices
-data3d = zeros(param.ny, param.nx, param.nz,'single');
+if(gpuprocess == 0)
+    data3d = zeros(param.ny, param.nx, param.nz,'single');
+else
+    data3d = zeros(param.ny, param.nx, param.nz,'single','gpuArray');
+end
 
 % Object Coordinate sytem in (mm)
 [xCoord,yCoord] = meshgrid(param.xs,param.ys);
+if(gpuprocess == 1)
+    xCoord = gpuArray(xCoord);
+    yCoord = gpuArray(yCoord);
+end
 
 % Get parameters from struct
 DSR = param.DSR;
@@ -104,5 +114,8 @@ for p=1:numProjs
     end % Loop end slices 
     
 end % Loop end Projections
+if(gpuprocess == 1)
+    data3d = gather(data3d);
+end
 data3d(:) = data3d(:)./ numProjs;
 end

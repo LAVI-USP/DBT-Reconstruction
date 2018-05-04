@@ -39,13 +39,23 @@
 %}
 % =========================================================================
 %% Projection Code
-function proj = projection(data3d,param,show3d)
+function proj = projection(data3d,param)
+
+global gpuprocess animation
 
 % Stack of projections
-proj = zeros(param.nv, param.nu, param.nProj,'single');
+if(gpuprocess == 0)
+    proj = zeros(param.nv, param.nu, param.nProj,'single');
+else
+    proj = zeros(param.nv, param.nu, param.nProj,'single','gpuArray');
+end
 
 % Detector Coordinate sytem in (mm)
 [uCoord,vCoord] = meshgrid(param.us,param.vs);
+if(gpuprocess == 1)
+    uCoord = gpuArray(uCoord);
+    vCoord = gpuArray(vCoord);
+end
 
 % Object Coordinate sytem in (mm) (just for 3D visualization)
 [xCoord,yCoord] = meshgrid(param.xs,param.ys);
@@ -85,7 +95,7 @@ for p=1:numProjs
                              ((DSR.*cos(teta))+DDR);          
         
         % 3D Visualization
-        if(nz==numSlices && show3d == 1)
+        if(nz==numSlices && animation == 1)
             figure(1)
             % Calculus of projection on the detector for visualization
             pvCoord = yCoord+((zCoords(nz).*((DSR.*sin(teta))+ yCoord))./...
@@ -113,12 +123,12 @@ for p=1:numProjs
     
     proj(:,:,p) = proj_tmp;
    
-    if(show3d == 1)
+    if(animation == 1)
         % 2D Visualization
         figure(1)
         subplot(2,2,2)
         imshow(imrotate(data3d(:,:,round(numSlices/2)),90),[])
-        title('Original');axis on;
+        title('Slice');axis on;
         subplot(2,2,4)
         imshow(imrotate(proj(:,:,p),90),[]); title(['Proj ',num2str(p)]);axis on;
     end 

@@ -48,7 +48,7 @@
 function [reconData3d,time] = FBP(proj,filterType,parameter)
 
 tStart = tic;
-if(filterType ~= 0)
+if(strcmp(filterType,'FBP'))
     proj = filterProj(proj,parameter);  % Filter projections
 end
 time = toc(tStart);

@@ -4,7 +4,7 @@
 % =========================================================================
 %{
 ---------------------------------------------------------------------------
-                MLEM(proj,nIter,parameter,showinfo)
+                        MLEM(proj,nIter,parameter)
 ---------------------------------------------------------------------------
     DESCRIPTION:
     This function reconstruct iteratively the volume through 
@@ -18,7 +18,6 @@
     - proj  = 2D projection images 
     - nIter = Specific iterations to save volume data 
     - parameter = Parameter of all geometry
-    - showinfo = Show information on Command Window
 
     OUTPUT:
 
@@ -46,7 +45,9 @@
 %}
 % =========================================================================
 %% Recon Code -  Iterative reconstruction: MLEM
-function [allreconData3d,allIterTime] = MLEM(proj,nIter,parameter,showinfo)
+function [allreconData3d,allIterTime] = MLEM(proj,nIter,parameter)
+
+global showinfo
 
 highestValue = (2^parameter.bitDepth) - 1;
 
@@ -61,7 +62,7 @@ reconData3d(parameter.iROI,parameter.jROI,parameter.sliceRange) = 1;
 vol_norm = backprojection(ones(parameter.nv, parameter.nu, parameter.nProj, 'single'), parameter);
 
 if(showinfo)
-    fprintf('Starting MLEM Iterations... \n\n')
+    fprintf('----------------\nStarting MLEM Iterations... \n\n')
 end
 
 % Start Iterations
@@ -70,7 +71,7 @@ for iter = 1:nIter(end)
     tStart = tic;
     
     % Error ratio between raw data and projection of estimated data  
-    proj_ratio = proj./projection(reconData3d,parameter,0);
+    proj_ratio = proj./projection(reconData3d,parameter);
     proj_ratio(isnan(proj_ratio)) = 0;
     proj_ratio(isinf(proj_ratio)) = 0;
 
