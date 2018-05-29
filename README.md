@@ -5,8 +5,11 @@ Please refer to this [paper](http://iris.sel.eesc.usp.br/lavi/)
 **Objective:** The goal of this paper is to present an open source reconstruction toolbox, which features the three basic types of DBT reconstruction with adjustable acquisition geometries. This toolbox is intended for academic usage and it aims at expanding the academic research in this field.  Since it is an open source toolbox, researchers are welcome to contribute to the current version of the software.
 
 Laboratory of Computer Vision (Lavi)
-Department of Electrical and Computer Engineering, 
+
+Department of Electrical and Computer Engineering,
+ 
 São Carlos School of Engineering, University of São Paulo, 
+
 São Carlos, Brazil
 
 

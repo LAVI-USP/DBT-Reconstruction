@@ -3,39 +3,39 @@
 % rodrigo.vimieiro@gmail.com
 % =========================================================================
 %{
----------------------------------------------------------------------------
-                projection(data3d,param,show3d)
----------------------------------------------------------------------------
-    DESCRIPTION:
-    This function calculates for each detector pixel, which voxel is
-    associated with that pixel in the specific projection. That is done for
-    all angles specified.
-    The geometry is for DBT with half cone-beam. All parameters are set in 
-    "ParameterSettings" code. 
- 
-    INPUT:
-
-    - data3d = 3D volume for projection 
-    - param = Parameter of all geometry
-    - show3d = flag to show or not the 3D geometry 
-
-    Reference: Patent US5872828
-
-    -----------------------------------------------------------------------
-    Copyright (C) <2018>  <Rodrigo de Barros Vimieiro>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+% -------------------------------------------------------------------------
+%                 projection(data3d,param,show3d)
+% -------------------------------------------------------------------------
+%     DESCRIPTION:
+%     This function calculates for each detector pixel, which voxel is
+%     associated with that pixel in the specific projection. That is done 
+%     for all angles specified.
+%     The geometry is for DBT with half cone-beam. All parameters are set 
+%     in "ParameterSettings" code. 
+%  
+%     INPUT:
+% 
+%     - data3d = 3D volume for projection 
+%     - param = Parameter of all geometry
+%     - show3d = flag to show or not the 3D geometry 
+% 
+%     Reference: Patent US5872828
+% 
+%     ---------------------------------------------------------------------
+%     Copyright (C) <2018>  <Rodrigo de Barros Vimieiro>
+% 
+%     This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %}
 % =========================================================================
 %% Projection Code
@@ -73,7 +73,7 @@ numSlices = param.nz;
 numProjs = param.nProj;
 zCoords = param.zs;     % Z object coordinates
 
-sliceRange = param.sliceRange;
+% sliceRange = param.sliceRange;
 
 % For each projection
 for p=1:numProjs
@@ -85,7 +85,7 @@ for p=1:numProjs
     proj_tmp = zeros(numVPixels,numUPixels,'single');
     
     % For each slice
-    for nz=sliceRange(1):sliceRange(end)
+    for nz=1:numSlices
           
         % Calculates a relation of detector and voxel coordinates
         pyCoord = ((vCoord.*((DSR.*cos(teta))+DDR-zCoords(nz)))-(zCoords(nz).*DSR.*sin(teta)))./...

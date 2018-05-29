@@ -3,45 +3,45 @@
 % rodrigo.vimieiro@gmail.com
 % =========================================================================
 %{
----------------------------------------------------------------------------
-                        MLEM(proj,nIter,parameter)
----------------------------------------------------------------------------
-    DESCRIPTION:
-    This function reconstruct iteratively the volume through 
-    Maximum-Likelihood Expectation-Maximization (MLEM) method.
-    
-    The geometry is for DBT with half cone-beam. All parameters are set in 
-    "ParameterSettings" code. 
- 
-    INPUT:
-
-    - proj  = 2D projection images 
-    - nIter = Specific iterations to save volume data 
-    - parameter = Parameter of all geometry
-
-    OUTPUT:
-
-    - allreconData3d = Cell with Volumes of each specific iteration.
-    - allIterTime = time of all iterations
-
-    Reference: Medical Image Reconstruction A Conceptual Tutorial - 
-    Gengsheng Lawrence Zeng (2010)
-
-    -----------------------------------------------------------------------
-    Copyright (C) <2018>  <Rodrigo de Barros Vimieiro>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+% -------------------------------------------------------------------------
+%                         MLEM(proj,nIter,parameter)
+% -------------------------------------------------------------------------
+%     DESCRIPTION:
+%     This function reconstruct iteratively the volume through 
+%     Maximum-Likelihood Expectation-Maximization (MLEM) method.
+%     
+%     The geometry is for DBT with half cone-beam. All parameters are set 
+%     in "ParameterSettings" code. 
+%  
+%     INPUT:
+% 
+%     - proj  = 2D projection images 
+%     - nIter = Specific iterations to save volume data 
+%     - parameter = Parameter of all geometry
+% 
+%     OUTPUT:
+% 
+%     - allreconData3d = Cell with Volumes of each specific iteration.
+%     - allIterTime = time of all iterations
+% 
+%     Reference: Medical Image Reconstruction A Conceptual Tutorial - 
+%     Gengsheng Lawrence Zeng (2010)
+% 
+%     ---------------------------------------------------------------------
+%     Copyright (C) <2018>  <Rodrigo de Barros Vimieiro>
+% 
+%     This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %}
 % =========================================================================
 %% Recon Code -  Iterative reconstruction: MLEM
@@ -56,7 +56,7 @@ allreconData3d = cell(1,size(nIter,2)); % Recon data for each iteration
 
 % Initial estimated volume data 
 reconData3d = zeros(parameter.ny, parameter.nx, parameter.nz,'single');
-reconData3d(parameter.iROI,parameter.jROI,parameter.sliceRange) = 1;
+reconData3d(:) = 1;
 
 % Volume normalization
 vol_norm = backprojection(ones(parameter.nv, parameter.nu, parameter.nProj, 'single'), parameter);
@@ -90,7 +90,7 @@ for iter = 1:nIter(end)
     % Save data 
     indIter = find(nIter == iter);
     if(indIter~=0)
-        allreconData3d{1,indIter} = reconData3d;
+        allreconData3d{1,indIter} = reconData3d(parameter.iROI,parameter.jROI,parameter.sliceRange);
     end
     
     if(showinfo) 

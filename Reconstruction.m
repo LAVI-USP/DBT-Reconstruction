@@ -3,49 +3,50 @@
 % rodrigo.vimieiro@gmail.com
 % =========================================================================
 %{
-
-    DESCRIPTION:
-
-    The goal of this software is to present an open source reconstruction 
-    toolbox, which features the three basic types of DBT reconstruction, 
-    with the possibility of different acquisition geometries. This toolbox 
-    is intended for academic usage and it aims at expanding the academic 
-    research in this field.  Since it is an open source toolbox, 
-    researchers are welcome to contribute to the current version of the 
-    software.
-
-    Department of Electrical and Computer Engineering, 
-    São Carlos School of Engineering, University of São Paulo, 
-    São Carlos, Brazil
-
-    -----------------------------------------------------------------------
-    Copyright (C) <2018>  <Rodrigo de Barros Vimieiro>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.    
- 
+% 
+%     DESCRIPTION:
+% 
+%     The goal of this software is to present an open source reconstruction 
+%     toolbox, which features the three basic types of DBT reconstruction, 
+%     with the possibility of different acquisition geometries. This toolbox 
+%     is intended for academic usage and it aims at expanding the academic 
+%     research in this field.  Since it is an open source toolbox, 
+%     researchers are welcome to contribute to the current version of the 
+%     software.
+% 
+%     Department of Electrical and Computer Engineering, 
+%     São Carlos School of Engineering, University of São Paulo, 
+%     São Carlos, Brazil
+% 
+%     ---------------------------------------------------------------------
+%     Copyright (C) <2018>  <Rodrigo de Barros Vimieiro>
+% 
+%     This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>.    
+%  
 %}
 % =========================================================================
 %%                      Reconstruction Code                              %%
 close all;clear;clc
 
 %% Global parameters
-global showinfo saveinfo animation gpuprocess
+global showinfo saveinfo animation gpuprocess noise
 
 showinfo = uint8(1);        % Show projection animation
 saveinfo = uint8(1);        % Save reconstructed volume
 animation = uint8(1);       % Graphical animation
-gpuprocess = uint8(0);      % Pprocessing on GPU
+gpuprocess = uint8(0);      % Processing on GPU
+noise = uint8(0);           % Add noise to phantom projections
 
 %% GUI - Data decision
 
@@ -114,13 +115,16 @@ else    %                   ** Phantom data **
 
     % Create Shepp-Logan phantom
     data3d = single(phantom3d('Modified Shepp-Logan', parameter.nz));   
-    data3d(data3d<0) = eps;
+    data3d(data3d<0) = eps;%     data3d = imresize(data3d, [1024 1024], 'nearest');
 
     % Make the Projections
     if(animation || saveinfo)
         % Create a figure of screen size
         figureScreenSize()
         dataProj = projection(data3d,parameter);
+        if(noise)
+            dataProj = insertNoise(dataProj,parameter); % Insert noise in projs
+        end
         if(saveinfo)
             save('res/Phantom/proj.mat','dataProj')
         else
@@ -139,12 +143,13 @@ fprintf('Starting reconstruction \n');
 
 %% Set specific recon parameters
 
-nIter = [4,5];          % Iteration to be saved (In case of MLEM or SART)
-filterType = 'FBP';     % Filter type: 'BP', 'FBP'
+nIter = [2,3];          % Iteration to be saved (MLEM or SART)
+filterType = 'BP';      % Filter type: 'BP', 'FBP'
+cutoff = 0.7;           % Percentage until cut off frequency (FBP)
 
 %% Reconstruction methods
 
-%                       ** Uncomment to use **
+%                       ## Uncomment to use ##
 [dataRecon3d,time] = FBP(dataProj,filterType,parameter);
 if(saveinfo)
     filestring = ['res/',answer,'/Recon',filterType,int2str(gpuprocess)];
@@ -152,20 +157,20 @@ if(saveinfo)
     xlswrite(filestring,time)
 end
 
-%                       ** Uncomment to use **
-% [dataRecon3d,time] = SART(dataProj,nIter,parameter);
-% if(saveinfo)
-%     filestring = ['res/',answer,'/ReconSART',int2str(gpuprocess)];
-%     save(filestring,'dataRecon3d','-v7.3')
-%     xlswrite(filestring,time)   
-% end
-
-%                       ** Uncomment to use **
+%                       ## Uncomment to use ##
 % [dataRecon3d,time] = MLEM(dataProj,nIter,parameter);
 % if(saveinfo)
 %     filestring = ['res/',answer,'/ReconMLEM',int2str(gpuprocess)];
 %     save(filestring,'dataRecon3d','-v7.3')
 %     xlswrite(filestring,time)  
+% end
+
+%                       ## Uncomment to use ##
+% [dataRecon3d,time] = SART(dataProj,nIter,parameter);
+% if(saveinfo)
+%     filestring = ['res/',answer,'/ReconSART',int2str(gpuprocess)];
+%     save(filestring,'dataRecon3d','-v7.3')
+%     xlswrite(filestring,time)   
 % end
 
 fprintf('Finished \n');

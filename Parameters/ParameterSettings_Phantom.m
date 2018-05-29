@@ -3,30 +3,32 @@
 % rodrigo.vimieiro@gmail.com
 % =========================================================================
 %{
-
-    DESCRIPTION:
-    This is the configuration file for the tomosynthesis acquisition 
-    geometry. This geometry is specified for the virtual phantom.
-
-    -----------------------------------------------------------------------
-    Copyright (C) <2018>  <Rodrigo de Barros Vimieiro>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>. 
- 
+% 
+%     DESCRIPTION:
+%     This is the configuration file for the tomosynthesis acquisition 
+%     geometry. This geometry is specified for the virtual phantom.
+% 
+%     ---------------------------------------------------------------------
+%     Copyright (C) <2018>  <Rodrigo de Barros Vimieiro>
+% 
+%     This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+%  
 %}
 % =========================================================================
 %% Physical Parameters Settings
+
+parameter.type = 'shepplogan';
 
 % Breast voxels density 
 parameter.nx = 128;    % number of voxels (columns)
@@ -77,12 +79,17 @@ parameter.tubeDeg = linspace(-parameter.tubeAngle/2,parameter.tubeAngle/2,parame
 
 %% General parameters
 
-% Slice range to be projected and back-projected
+% Slice range to be saved
 parameter.sliceRange = 1:parameter.nz;
-% Region of interest (ROI) to reconstruct (Save computation time)
+% Region of interest (ROI) to store
 parameter.iROI = 1:parameter.ny;   
 parameter.jROI = 1:parameter.nx;    
 
 % Bit number quatization
 parameter.bitDepth = 1;
+
+% Noise parameters
+parameter.tau = -17;  
+parameter.lambda = 0.1; % (Should be a matrix) Noise is signal dependent
+parameter.sigmaE = 7.03;
  
