@@ -50,17 +50,29 @@ noise = uint8(0);           % Add noise to phantom projections
 
 %% GUI - Data decision
 
-answer = questdlg('Load Dicom file or create a virtual Phantom?', ...
+answer = questdlg('Load Dicom file or create a Shepp-Logan Phantom?', ...
 	'Data decision', ...
-	'Dicom','Phantom','Dicom');
+	'Dicom','Shepp-Logan','Dicom');
 % Handle response
 switch answer
     case 'Dicom'
-        fprintf('Waiting for Dicom files \n')
-        data = 1;
-    case 'Phantom'
-        fprintf('Creating a virtual phantom \n')
-        data = 2;
+        answer = questdlg('Clinical or VCT?', ...
+            'Data decision', ...
+            'Clinical','VCT','Clinical');
+        switch answer
+            case 'Clinical'
+                fprintf('Waiting for Clinical images \n')
+                data = 1;
+            case 'VCT'
+                fprintf('Waiting for VCT images \n')
+                data = 2;
+            otherwise
+                fprintf('Cancelled by user \n');
+                return
+        end
+    case 'Shepp-Logan'
+        fprintf('Creating a Shepp-Logan phantom \n')
+        data = 3;
     otherwise
         fprintf('Cancelled by user \n');
     	return;    
@@ -77,16 +89,20 @@ if(~exist('res','dir'))
 end
 addpath('res');
 
-
-
-if(data == 1)   %           ** Dicom data **
+if(data == 1 || data == 2)   %   ** Dicom data **
     
-    ParameterSettings_GE
-           
-    if(~exist('res/Dicom','dir'))
-        mkdir('res/Dicom')
+    if(data==1)
+        ParameterSettings_GE
+        if(~exist('res/Clinical','dir'))
+            mkdir('res/Clinical')
+        end
+    else
+        ParameterSettings_VCT
+        if(~exist('res/VCT','dir'))
+            mkdir('res/VCT')
+        end
     end
-    
+           
     % Load Projection Data    
     uiwait(msgbox('Select the path of projection Dicom files.','Dicom','Warn'));
     path_User = userpath;
@@ -98,13 +114,13 @@ if(data == 1)   %           ** Dicom data **
     else
         userpath(path_ProjData)       
         
-        [dataProj,infoDicom] = readDicom(path_ProjData);
+        [dataProj,infoDicom] = readDicom(path_ProjData,parameter);
         parameter.bitDepth = infoDicom(:,1).BitDepth;
         % Pre process projections
         [dataProj,parameter] = dataPreprocess(dataProj,parameter);
     end
     
-else    %                   ** Phantom data **
+else    %                   ** Shepp-Logan data **
     
     ParameterSettings_Phantom;
     
@@ -143,14 +159,14 @@ fprintf('Starting reconstruction \n');
 
 %% Set specific recon parameters
 
-nIter = [2,3];          % Iteration to be saved (MLEM or SART)
-filterType = 'BP';      % Filter type: 'BP', 'FBP'
-cutoff = 0.7;           % Percentage until cut off frequency (FBP)
+nIter = [1,2,5,10,20];      % Iteration to be saved (MLEM or SART)
+filterType = 'FBP';         % Filter type: 'BP', 'FBP'
+cutoff = 0.7;               % Percentage until cut off frequency (FBP)
 
 %% Reconstruction methods
 
 %                       ## Uncomment to use ##
-[dataRecon3d,time] = FBP(dataProj,filterType,parameter);
+[dataRecon3d,time] = FBP(dataProj,filterType,cutoff,parameter);
 if(saveinfo)
     filestring = ['res/',answer,'/Recon',filterType,int2str(gpuprocess)];
     save(filestring,'dataRecon3d')

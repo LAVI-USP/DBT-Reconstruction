@@ -4,7 +4,7 @@
 % =========================================================================
 %{
 % -------------------------------------------------------------------------
-%                         readDicom(imgdir)
+%                         readDicom(imgdir,parameter)
 % -------------------------------------------------------------------------
 %     DESCRIPTION:
 %     This function read a set of Dicom images from a directory.
@@ -13,6 +13,7 @@
 %     INPUT:
 % 
 %     - imgdir = Directory for Dicom files 
+%     - parameter = Parameter of all geometry 
 % 
 %     OUTPUT:
 % 
@@ -37,7 +38,12 @@
 %}
 % =========================================================================
 %% Read Dicom images from files
-function [dataDicom,infoDicom] = readDicom(imgdir)
+function [dataDicom,infoDicom] = readDicom(imgdir,parameter)
+
+dc=0;
+if(strcmp(parameter.type,'vct')||strcmp(parameter.type,'hologic'))
+    dc = 1;
+end
 
 img_list = dir([imgdir,'/*.dcm']);       % List dicom files
 img_count = size(img_list,1);
@@ -45,7 +51,7 @@ img_count = size(img_list,1);
 for i=1:img_count
     imgAux = single(dicomread([imgdir, filesep ,  img_list(i,:).name]));  % Read Dicom
     infoAux = dicominfo([imgdir, filesep ,  img_list(i,:).name]);         % Read Dicom headers
-    dataDicom(:,:,infoAux.InstanceNumber) = imgAux;
-    infoDicom(:,infoAux.InstanceNumber) = infoAux;
+    dataDicom(:,:,infoAux.InstanceNumber+dc) = imgAux;
+    infoDicom(:,infoAux.InstanceNumber+dc) = infoAux;
 end
 end
