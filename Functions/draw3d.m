@@ -80,7 +80,9 @@ vetor_faces =  [1 2 3 4
 %drawAxes([param.us(1),param.vs(1),0,0,0,0], [-0.15*param.su, 0.15*param.su, 0], 2, ['r','g','b']);
 
 % Rotate x-ray source
-[xSource,ySource,zSource] = rot3d(0,0,param.DSD,theta,'x');
+xSource = 0;
+ySource = param.DSR.*sin(-theta);
+zSource = param.DSR.*cos(theta)+param.DDR;
 % Draw x-ray source
 plot3(xSource,ySource,zSource,'r.','markersize',45)
 % Draw text

@@ -124,10 +124,10 @@ else    %                   ** Shepp-Logan data **
     
     ParameterSettings_Phantom;
     
-    if(~exist('res/Phantom','dir'))
-        mkdir('res/Phantom')
+    if(~exist('res/Shepp-Logan','dir'))
+        mkdir('res/Shepp-Logan')
     end
-    addpath('res/Phantom');
+    addpath('res/Shepp-Logan');
 
     % Create Shepp-Logan phantom
     data3d = single(phantom3d('Modified Shepp-Logan', parameter.nz));   
