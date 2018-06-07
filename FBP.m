@@ -7,11 +7,11 @@
 %                 FBP(proj,filterType,cutoff,parameter)
 % -------------------------------------------------------------------------
 %     DESCRIPTION:
-%     This function makes the Filtered Backprojection of 2D images, in order 
-%     to reconstruct a certain number of slices.
+%     This function makes the Filtered Backprojection of 2D images, 
+%     in order to reconstruct a certain number of slices.
 %     
-%     The geometry is for DBT with half cone-beam. All parameters are set in 
-%     "ParameterSettings" code. 
+%     The geometry is for DBT with half cone-beam. All parameters are set 
+%     in "ParameterSettings" code. 
 %  
 %     INPUT:
 % 
@@ -47,6 +47,12 @@
 % =========================================================================
 %% Recon Code - Analytical reconstruction: FBP
 function [reconData3d,time] = FBP(proj,filterType,cutoff,parameter)
+
+global showinfo
+
+if(showinfo)
+    fprintf('----------------\nStarting FBP... \n\n')
+end
 
 tStart = tic;
 if(strcmp(filterType,'FBP'))

@@ -8,9 +8,9 @@
 % 
 %     The goal of this software is to present an open source reconstruction 
 %     toolbox, which features the three basic types of DBT reconstruction, 
-%     with the possibility of different acquisition geometries. This toolbox 
-%     is intended for academic usage and it aims at expanding the academic 
-%     research in this field.  Since it is an open source toolbox, 
+%     with the possibility of different acquisition geometries. This 
+%     toolbox is intended for academic usage and it aims at expanding the 
+%     academic research in this field.  Since it is an open source toolbox, 
 %     researchers are welcome to contribute to the current version of the 
 %     software.
 % 
@@ -93,13 +93,13 @@ if(data == 1 || data == 2)   %   ** Dicom data **
     
     if(data==1)
         ParameterSettings_GE
-        if(~exist('res/Clinical','dir'))
-            mkdir('res/Clinical')
+        if(~exist(['res',filesep,'Clinical'],'dir'))
+            mkdir(['res',filesep,'Clinical'])
         end
     else
         ParameterSettings_VCT
-        if(~exist('res/VCT','dir'))
-            mkdir('res/VCT')
+        if(~exist(['res',filesep,'VCT'],'dir'))
+            mkdir(['res',filesep,'VCT'])
         end
     end
            
@@ -124,10 +124,10 @@ else    %                   ** Shepp-Logan data **
     
     ParameterSettings_Phantom;
     
-    if(~exist('res/Shepp-Logan','dir'))
-        mkdir('res/Shepp-Logan')
+    if(~exist(['res',filesep,'Shepp-Logan'],'dir'))
+        mkdir(['res',filesep,'Shepp-Logan'])
     end
-    addpath('res/Shepp-Logan');
+    addpath(['res',filesep,'Shepp-Logan']);
 
     % Create Shepp-Logan phantom
     data3d = single(phantom3d('Modified Shepp-Logan', parameter.nz));   
@@ -142,14 +142,13 @@ else    %                   ** Shepp-Logan data **
             dataProj = insertNoise(dataProj,parameter); % Insert noise in projs
         end
         if(saveinfo)
-            save('res/Phantom/proj.mat','dataProj')
+            save(['res',filesep,'Shepp-Logan',filesep,'proj.mat'],'dataProj')
         else
             load proj.mat
         end
     else
         load proj.mat
-    end
-    
+    end   
 end
 
 if(gpuprocess)
@@ -159,16 +158,16 @@ fprintf('Starting reconstruction \n');
 
 %% Set specific recon parameters
 
-nIter = [1,2,5,10,20];      % Iteration to be saved (MLEM or SART)
-filterType = 'FBP';         % Filter type: 'BP', 'FBP'
-cutoff = 0.7;               % Percentage until cut off frequency (FBP)
+nIter = [2,3,4,8];           % Iteration to be saved (MLEM or SART)
+filterType = 'FBP';          % Filter type: 'BP', 'FBP'
+cutoff = 0.75;               % Percentage until cut off frequency (FBP)
 
 %% Reconstruction methods
 
 %                       ## Uncomment to use ##
 [dataRecon3d,time] = FBP(dataProj,filterType,cutoff,parameter);
 if(saveinfo)
-    filestring = ['res/',answer,'/Recon',filterType,int2str(gpuprocess)];
+    filestring = ['res',filesep,answer,filesep,'Recon',filterType,int2str(gpuprocess)];
     save(filestring,'dataRecon3d')
     xlswrite(filestring,time)
 end
@@ -176,7 +175,7 @@ end
 %                       ## Uncomment to use ##
 % [dataRecon3d,time] = MLEM(dataProj,nIter,parameter);
 % if(saveinfo)
-%     filestring = ['res/',answer,'/ReconMLEM',int2str(gpuprocess)];
+%     filestring = ['res',filesep,answer,filesep,'ReconMLEM',int2str(gpuprocess)];
 %     save(filestring,'dataRecon3d','-v7.3')
 %     xlswrite(filestring,time)  
 % end
@@ -184,7 +183,7 @@ end
 %                       ## Uncomment to use ##
 % [dataRecon3d,time] = SART(dataProj,nIter,parameter);
 % if(saveinfo)
-%     filestring = ['res/',answer,'/ReconSART',int2str(gpuprocess)];
+%     filestring = ['res',filesep,answer,filesep,'ReconSART',int2str(gpuprocess)];
 %     save(filestring,'dataRecon3d','-v7.3')
 %     xlswrite(filestring,time)   
 % end
@@ -194,7 +193,7 @@ fprintf('Please, check "res" folder for results \n');
 
 %% Show info
 
-if(animation && data == 2)
+if(animation && data == 3)
     % Create a figure of screen size
     figureScreenSize()
     % 3D Backprojection Visualization
@@ -203,7 +202,7 @@ if(animation && data == 2)
         imshow(data3d(:,:,k))
         title(['Slice Orig ',num2str(k)]);axis on;
         subplot(1,2,2)
-        imshow(dataRecon3d(:,:,k),[])    % [.09 .24] limit for MLEM-15
+        imshow(dataRecon3d(:,:,k),[])   
         title(['Slice Recon ',num2str(k)]);axis on;
         pause(0.08)
     end

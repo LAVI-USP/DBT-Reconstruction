@@ -31,9 +31,9 @@
 parameter.type = 'vct';
 
 % Breast voxels density
-parameter.nx = 1058;    % number of voxels (columns)
-parameter.ny = 2100;    % number of voxels (rows)
-parameter.nz = 126;     % number of voxels (slices)
+parameter.nx = 784;    % number of voxels (columns)
+parameter.ny = 2053;    % number of voxels (rows)
+parameter.nz = 127;     % number of voxels (slices)
 
 % Detector panel pixel density
 parameter.nu = 2394;    % number of pixels (columns)
@@ -50,8 +50,8 @@ parameter.dv = 0.1;
 
 % X-ray source and detector distances
 parameter.DSD = 660;                            % Distance from source to detector (mm)
-parameter.DSO = 438;                          % Distance from source to the top of object (mm)
-parameter.DDR = 0;%40;                             % Distance from detector to pivot (mm)
+parameter.DSO = 574.7;                          % Distance from source to the top of object (mm)
+parameter.DDR = 40;                             % Distance from detector to pivot (mm)
 parameter.DSR = parameter.DSD - parameter.DDR;  % Distance from source to pivot (mm)
 parameter.DAG = 22;                             % Distance of Air Gap (mm)    
 
