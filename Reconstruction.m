@@ -131,7 +131,7 @@ else    %                   ** Shepp-Logan data **
 
     % Create Shepp-Logan phantom
     data3d = single(phantom3d('Modified Shepp-Logan', parameter.nz));   
-    data3d(data3d<0) = eps;%     data3d = imresize(data3d, [1024 1024], 'nearest');
+    data3d(data3d<0) = eps;
 
     % Make the Projections
     if(animation || saveinfo)
@@ -143,6 +143,7 @@ else    %                   ** Shepp-Logan data **
         end
         if(saveinfo)
             save(['res',filesep,'Shepp-Logan',filesep,'proj.mat'],'dataProj')
+            infoDicom = [];
         else
             load proj.mat
         end
@@ -165,27 +166,21 @@ cutoff = 0.75;               % Percentage until cut off frequency (FBP)
 %% Reconstruction methods
 
 %                       ## Uncomment to use ##
-[dataRecon3d,time] = FBP(dataProj,filterType,cutoff,parameter);
+dataRecon3d = FBP(dataProj,filterType,cutoff,parameter);
 if(saveinfo)
-    filestring = ['res',filesep,answer,filesep,'Recon',filterType,int2str(gpuprocess)];
-    save(filestring,'dataRecon3d')
-    xlswrite(filestring,time)
+    saveData(dataRecon3d,parameter,answer,infoDicom);
 end
 
 %                       ## Uncomment to use ##
-% [dataRecon3d,time] = MLEM(dataProj,nIter,parameter);
+% dataRecon3d = MLEM(dataProj,nIter,parameter);
 % if(saveinfo)
-%     filestring = ['res',filesep,answer,filesep,'ReconMLEM',int2str(gpuprocess)];
-%     save(filestring,'dataRecon3d','-v7.3')
-%     xlswrite(filestring,time)  
+%     saveData(dataRecon3d,parameter,answer,infoDicom);
 % end
 
 %                       ## Uncomment to use ##
-% [dataRecon3d,time] = SART(dataProj,nIter,parameter);
+% dataRecon3d = SART(dataProj,nIter,parameter);
 % if(saveinfo)
-%     filestring = ['res',filesep,answer,filesep,'ReconSART',int2str(gpuprocess)];
-%     save(filestring,'dataRecon3d','-v7.3')
-%     xlswrite(filestring,time)   
+%     saveData(dataRecon3d,parameter,answer,infoDicom);
 % end
 
 fprintf('Finished \n');
@@ -202,7 +197,7 @@ if(animation && data == 3)
         imshow(data3d(:,:,k))
         title(['Slice Orig ',num2str(k)]);axis on;
         subplot(1,2,2)
-        imshow(dataRecon3d(:,:,k),[])   
+        imshow(dataRecon3d{1,end}(:,:,k),[])   
         title(['Slice Recon ',num2str(k)]);axis on;
         pause(0.08)
     end

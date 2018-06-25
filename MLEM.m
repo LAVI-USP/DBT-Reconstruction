@@ -21,8 +21,8 @@
 % 
 %     OUTPUT:
 % 
-%     - allreconData3d = Cell with Volumes of each specific iteration.
-%     - allIterTime = time of all iterations
+%     - allreconData3d{1,...} = Cell with Volumes of each specific iteration.
+%     - allreconData3d{2,...} = Cell with informations of each specific iteration.
 % 
 %     Reference: Medical Image Reconstruction A Conceptual Tutorial - 
 %     Gengsheng Lawrence Zeng (2010)
@@ -45,9 +45,12 @@
 %}
 % =========================================================================
 %% Recon Code -  Iterative reconstruction: MLEM
-function [allreconData3d,allIterTime] = MLEM(proj,nIter,parameter)
+function allreconData3d = MLEM(proj,nIter,parameter)
 
 global showinfo
+
+info.startDateAndTime = char(datetime('now','Format','MM-dd-yyyy''  ''HH:mm:ss'));
+info.reconMeth = 'MLEM';
 
 highestValue = (2^parameter.bitDepth) - 1;
 
@@ -81,20 +84,23 @@ for iter = 1:nIter(end)
     upt_term(isinf(upt_term)) = 0;
 
     reconData3d = reconData3d.*upt_term; % Updates the previous estimation 
-    
-    allIterTime(iter,1) = toc(tStart);
-    
+        
     % Truncate to highest value
     reconData3d(reconData3d>highestValue) = highestValue;
+    
+    allIterTime(iter,1) = toc(tStart);
     
     % Save data 
     indIter = find(nIter == iter);
     if(indIter~=0)
         allreconData3d{1,indIter} = reconData3d(parameter.iROI,parameter.jROI,parameter.sliceRange);
+        info.IterationNumber = num2str(iter);
+        info.IterationTime = num2str(sum(allIterTime(:)));
+        allreconData3d{2,indIter} = info;        
     end
     
     if(showinfo) 
-        fprintf('Itaration %d Time: %.2f\n\n',iter,toc(tStart));  
+        fprintf('Itaration %d Time: %.2f\n\n',iter,allIterTime(iter,1));  
     end
     
 end% Loop end iterations

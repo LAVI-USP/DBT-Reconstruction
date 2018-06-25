@@ -21,8 +21,8 @@
 % 
 %     OUTPUT:
 % 
-%     - allreconData3d = Cell with Volumes of each specific iteration.
-%     - allIterTime = time of all iterations
+%     - allreconData3d{1,...} = Cell with Volumes of each specific iteration.
+%     - allreconData3d{2,...} = Cell with informations of each specific iteration.
 % 
 %     Reference: Three-Dimensional Digital Tomosynthesis - Yulia Levakhina (2014)
 % 
@@ -44,9 +44,12 @@
 %}
 % =========================================================================
 %% Recon Code -  Iterative reconstruction: SART
-function [allreconData3d,allIterTime] = SART(proj,nIter,parameter)
+function allreconData3d = SART(proj,nIter,parameter)
 
 global showinfo animation
+
+info.startDateAndTime = char(datetime('now','Format','MM-dd-yyyy''  ''HH:mm:ss'));
+info.reconMeth = 'SART';
 
 highestValue = (2^parameter.bitDepth) - 1;
 
@@ -84,22 +87,24 @@ for iter = 1:nIter(end)
     upt_term(isinf(upt_term)) = 0;
 
     reconData3d = reconData3d + upt_term; % Updates the previous estimation 
-    
-    allIterTime(iter,1) = toc(tStart);
-    
+        
     % Truncate to highest and minimum value
     reconData3d(reconData3d>highestValue) = highestValue;
     reconData3d(reconData3d<0) = 0;
 
+    allIterTime(iter,1) = toc(tStart);
     
     % Save data 
     indIter = find(nIter == iter);
     if(indIter~=0)
         allreconData3d{1,indIter} = reconData3d(parameter.iROI,parameter.jROI,parameter.sliceRange);
+        info.IterationNumber = num2str(iter);
+        info.IterationTime = num2str(sum(allIterTime(:)));
+        allreconData3d{2,indIter} = info;      
     end
     
     if(showinfo) 
-        fprintf('Itaration %d Time: %.2f\n\n',iter,toc(tStart));  
+        fprintf('Itaration %d Time: %.2f\n\n',iter,allIterTime(iter,1)); 
     end
     
 end

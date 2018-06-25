@@ -22,8 +22,8 @@
 % 
 %     OUTPUT:
 % 
-%     - reconData3d = Volume data reconstructed with FBP.
-%     - time = [Filtering Time , Backproject Time]
+%     - reconData3d{1} = Volume data reconstructed with FBP.
+%     - reconData3d{2} = Struct informations like - Filter and Bp Time
 % 
 %     Reference: Jiang Hsieh's book (second edition)
 %     Reference: Fessler Book -> (http://web.eecs.umich.edu/~fessler/book/c-tomo.pdf)
@@ -46,26 +46,31 @@
 %}
 % =========================================================================
 %% Recon Code - Analytical reconstruction: FBP
-function [reconData3d,time] = FBP(proj,filterType,cutoff,parameter)
+function reconData3d = FBP(proj,filterType,cutoff,parameter)
 
 global showinfo
+
+info.startDateAndTime = char(datetime('now','Format','MM-dd-yyyy''  ''HH:mm:ss'));
+info.reconMeth = filterType;
 
 if(showinfo)
     fprintf('----------------\nStarting FBP... \n\n')
 end
 
-tStart = tic;
 if(strcmp(filterType,'FBP'))
+    tStart = tic;
     proj = filterProj(proj,parameter,cutoff);  % Filter projections
+    info.FilterTime = num2str(toc(tStart));
+    info.CutOffFreq = num2str(cutoff);
 end
-time = toc(tStart);
-tStart = tic;
 
+tStart = tic;
 % Make the Backprojection
 reconData3d = backprojection(proj,parameter);
+info.BackprojectTime = num2str(toc(tStart));
 
 % Store only interested slices and ROIs
-reconData3d = reconData3d(parameter.iROI,parameter.jROI,parameter.sliceRange);
+reconData3d = {reconData3d(parameter.iROI,parameter.jROI,parameter.sliceRange)};
+reconData3d{2,1} = info;
 
-time = [time,toc(tStart)];
 end
