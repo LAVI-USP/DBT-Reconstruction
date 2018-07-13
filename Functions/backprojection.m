@@ -51,10 +51,10 @@ function data3d = backprojection(proj,param)
 global gpuprocess
 
 % Stack of reconstructed slices
-if(gpuprocess == 0)
-    data3d = zeros(param.ny, param.nx, param.nz,'single');
-else
+if(gpuprocess == 1)
     data3d = zeros(param.ny, param.nx, param.nz,'single','gpuArray');
+else
+    data3d = zeros(param.ny, param.nx, param.nz,'single');
 end
 
 % Object Coordinate sytem in (mm)
@@ -73,10 +73,6 @@ numUPixels = param.nu;
 numSlices = param.nz;
 numProjs = param.nProj;
 zCoords = param.zs;     % Z object coordinates
-
-% sliceRange = param.sliceRange;
-% iROI = param.iROI;
-% jROI = param.jROI;
 
 % For each projection
 for p=1:numProjs

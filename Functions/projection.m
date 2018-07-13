@@ -4,7 +4,7 @@
 % =========================================================================
 %{
 % -------------------------------------------------------------------------
-%                 projection(data3d,param,show3d)
+%                 projection(data3d,param)
 % -------------------------------------------------------------------------
 %     DESCRIPTION:
 %     This function calculates for each detector pixel, which voxel is
@@ -17,7 +17,10 @@
 % 
 %     - data3d = 3D volume for projection 
 %     - param = Parameter of all geometry
-%     - show3d = flag to show or not the 3D geometry 
+%
+%     OUTPUT:
+% 
+%     - proj = projection for each angle.
 % 
 %     Reference: Patent US5872828
 % 
@@ -44,10 +47,10 @@ function proj = projection(data3d,param)
 global gpuprocess animation
 
 % Stack of projections
-if(gpuprocess == 0)
-    proj = zeros(param.nv, param.nu, param.nProj,'single');
-else
+if(gpuprocess == 1)
     proj = zeros(param.nv, param.nu, param.nProj,'single','gpuArray');
+else
+    proj = zeros(param.nv, param.nu, param.nProj,'single');
 end
 
 % Detector Coordinate sytem in (mm)
