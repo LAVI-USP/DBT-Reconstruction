@@ -8,8 +8,7 @@
 % -------------------------------------------------------------------------
 %     DESCRIPTION:
 %     This function read a set of Dicom images from a directory.
-%  
-%  
+%   
 %     INPUT:
 % 
 %     - imgdir = Directory for Dicom files 
@@ -40,18 +39,38 @@
 %% Read Dicom images from files
 function [dataDicom,infoDicom] = readDicom(imgdir,parameter)
 
-dc=0;
-if(strcmp(parameter.type,'vct')||strcmp(parameter.type,'hologic'))
+if(strcmp(parameter.type,'vct'))
     dc = 1;
+    typecase = 1;
+end
+if(strcmp(parameter.type,'hologic'))
+    dc = 1;
+    typecase = 0;
+end
+if(strcmp(parameter.type,'ge'))
+    dc = 0;
+    typecase = 1;
 end
 
-img_list = dir([imgdir,'/*.dcm']);       % List dicom files
+img_list = dir([imgdir,'/*.dcm']);  % List dicom files
 img_count = size(img_list,1);
 
 for i=1:img_count
+    
     imgAux = single(dicomread([imgdir, filesep ,  img_list(i,:).name]));  % Read Dicom
     infoAux = dicominfo([imgdir, filesep ,  img_list(i,:).name]);         % Read Dicom headers
-    dataDicom(:,:,infoAux.InstanceNumber+dc) = imgAux;
-    infoDicom(:,infoAux.InstanceNumber+dc) = infoAux;
+    
+    if(typecase == 1)
+        nProj = infoAux.InstanceNumber+dc;
+    else
+        filename = strtrim(img_list(i,:).name);
+        filenameSlpited = strsplit(filename, '_');
+        filenameSlpited = strsplit(filenameSlpited{2}, '.');
+        nProj = str2double(filenameSlpited{1})+dc;
+    end 
+
+    dataDicom(:,:,nProj) = imgAux;
+    infoDicom(:,nProj) = infoAux;
 end
+
 end
