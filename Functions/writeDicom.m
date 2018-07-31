@@ -4,7 +4,7 @@
 % =========================================================================
 %{
 % -------------------------------------------------------------------------
-%    writeDicom(dataRecon3d,infoDicomProjs,filestring,reconmeth,parameter)
+%    writeDicom(dataRecon3d,infoDicomRecon,filestring,reconmeth,parameter)
 % -------------------------------------------------------------------------
 %     DESCRIPTION:
 %     This function write a set of Dicom images with respective headers.
@@ -36,12 +36,12 @@
 %}
 % =========================================================================
 %% Write Dicom images
-function writeDicom(dataRecon3d,infoDicomProjs,filestring,reconmeth,parameter)
+function writeDicom(dataRecon3d,infoDicomRecon,filestring,reconmeth,parameter)
 
 % Get reconstructed dicom headers
-uiwait(msgbox('Select reconstructed image Dicom file to get headers.','Dicom','Warn'));
-[filename,path] = uigetfile('*.dcm');
-infoDicomRecon = dicominfo([path,filename]);
+% uiwait(msgbox('Select reconstructed image Dicom file to get headers.','Dicom','Warn'));
+% [filename,path] = uigetfile('*.dcm');
+% infoDicomRecon = dicominfo([path,filename]);
 
 % Weather is Hologic or GE
 dc=0;
