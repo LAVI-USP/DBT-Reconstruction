@@ -168,19 +168,19 @@ cutoff = 0.75;               % Percentage until cut off frequency (FBP)
 %                       ## Uncomment to use ##
 dataRecon3d = FBP(dataProj,filterType,cutoff,parameter);
 if(saveinfo)
-    saveData(dataRecon3d,parameter,answer,infoDicom);
+    saveData(dataRecon3d,parameter,answer,[],infoDicom);
 end
 
 %                       ## Uncomment to use ##
 % dataRecon3d = MLEM(dataProj,nIter,parameter);
 % if(saveinfo)
-%     saveData(dataRecon3d,parameter,answer,infoDicom);
+%     saveData(dataRecon3d,parameter,answer,[],infoDicom);
 % end
 
 %                       ## Uncomment to use ##
 % dataRecon3d = SART(dataProj,nIter,parameter);
 % if(saveinfo)
-%     saveData(dataRecon3d,parameter,answer,infoDicom);
+%     saveData(dataRecon3d,parameter,answer,[],infoDicom);
 % end
 
 fprintf('Finished \n');

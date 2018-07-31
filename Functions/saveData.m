@@ -4,7 +4,7 @@
 % =========================================================================
 %{
 % -------------------------------------------------------------------------
-%    saveData(dataRecon3d,parameter,answer,infoDicom)
+%    saveData(dataRecon3d,parameter,title,folder,infoDicom)
 % -------------------------------------------------------------------------
 %     DESCRIPTION:
 %     This function save reconstructed data.
@@ -14,8 +14,9 @@
 % 
 %     - dataRecon3d = Reconstructed data
 %     - parameter = Parameter of all geometry
-%     - answer = Type of data (Dicom, Shepp-Logan, VCT)
+%     - title = Title of the data (Dicom, Shepp-Logan, VCT)
 %     - infoDicom = Dicom header from projections
+%     - folder = Folder to save the data
 % 
 %     ---------------------------------------------------------------------
 %     Copyright (C) <2018>  <Rodrigo de Barros Vimieiro>
@@ -35,9 +36,34 @@
 %}
 % =========================================================================
 %% Save data
-function saveData(dataRecon3d,parameter,answer,infoDicom)
+function saveData(dataRecon3d,varargin)
 
 global gpuprocess
+
+optionals = {[],[],[],[]}; % placeholder for inputs
+
+numInputs = nargin - 1; % Minus number of required inputs
+inputVar = 1;
+
+while numInputs > 0
+    if ~isempty(varargin{inputVar})
+        optionals{inputVar} = varargin{inputVar};
+    end
+    inputVar = inputVar + 1;
+    numInputs = numInputs - 1;
+end
+
+parameter = optionals{1};
+title = optionals{2};
+folder = optionals{3};
+infoDicom = optionals{4};
+
+if(isempty(folder)) 
+    folder='res';
+else
+    mkdir([folder,filesep,title]);
+end
+
 
 % Some more informations to save
 for k=1:size(dataRecon3d,2)
@@ -47,16 +73,17 @@ for k=1:size(dataRecon3d,2)
     else
         info.GPU = 'False';
     end
-    info.Title = answer;
+    info.Title = title;
     dataRecon3d{2,k} = info;
 end
 
 
-filestring = ['res',filesep,answer,filesep,'Recon',info.reconMeth,int2str(gpuprocess)];
+filestring = [folder,filesep,title,filesep,'Recon',info.reconMeth,int2str(gpuprocess)];
 
-if(~strcmp(answer,'Shepp-Logan'))
+if(~isempty(infoDicom))
     writeDicom(dataRecon3d,infoDicom,filestring,info.reconMeth,parameter);
 end
+
 save(filestring,'dataRecon3d','-v7.3')
 
 end
