@@ -77,6 +77,9 @@ parameter.nProj = 9;
 parameter.tubeAngle = 25;   % Tube Angle
 parameter.tubeDeg = linspace(-parameter.tubeAngle/2,parameter.tubeAngle/2,parameter.nProj);
 
+parameter.detAngle = 0;   % Detector Angle
+parameter.detectorDeg = linspace(-parameter.detAngle/2,parameter.detAngle/2,parameter.nProj);
+
 %% General parameters
 
 % Slice range to be saved
