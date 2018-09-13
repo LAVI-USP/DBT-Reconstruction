@@ -80,8 +80,8 @@ end
 
 %% Load components
 
-addpath('Functions');
-addpath('Parameters');
+addpath(genpath('Functions'));
+addpath(genpath('Parameters'));
 
 if(~exist('res','dir'))
     mkdir('res')

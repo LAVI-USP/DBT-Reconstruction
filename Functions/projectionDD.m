@@ -49,14 +49,9 @@
 %% 3-D Distance Driven Projection Code
 function proj = projectionDD(data3d,param)
 
-global gpuprocess
-
 % Stack of projections
-if(gpuprocess == 1)
-    proj = zeros(param.nv, param.nu, param.nProj,'single','gpuArray');
-else
-    proj = zeros(param.nv, param.nu, param.nProj,'single');
-end
+proj = zeros(param.nv, param.nu, param.nProj,'single');
+
 
 % Map detector and object boudaries
 param.us = (param.nu:-1:0)*param.du;
@@ -69,32 +64,14 @@ param.zs = (0:1:param.nz)*param.dz + param.DAG + (param.dz/2);
 [detX,detY] = meshgrid(param.us,param.vs);
 detZ = zeros(size(detX));
 
-if(gpuprocess == 1)
-    detX = gpuArray(detX);
-    detY = gpuArray(detY);
-    detZ = gpuArray(detZ);
-end
-
 % Object boudaries coordinate sytem in (mm)
 [objX,objY] = meshgrid(param.xs,param.ys);
 objZ = param.zs;     % Z object coordinates
-
-if(gpuprocess == 1)
-    objX = gpuArray(objX);
-    objY = gpuArray(objY);
-    objZ = gpuArray(objZ);
-end
 
 % X-ray tube initial position
 tubeX = 0;
 tubeY = 0;
 tubeZ = param.DSD;
-
-if(gpuprocess == 1)
-    tubeX = gpuArray(tubeX);
-    tubeY = gpuArray(tubeY);
-    tubeZ = gpuArray(tubeZ);
-end
 
 % Iso-center position
 isoY = 0;
@@ -117,15 +94,10 @@ nProjs = param.nProj;
 pixsZ = param.dz; 
 
 % For each projection
-parfor p=1:nProjs
+for p=1:nProjs
     
     % Temporary variable to acumulate all projection from the slices
-    if(gpuprocess == 1)
-        proj_tmp = zeros(nDetY,nDetX,'single','gpuArray');
-    else
-        proj_tmp = zeros(nDetY,nDetX,'single');
-    end
-    
+    proj_tmp = zeros(nDetY,nDetX,'single');
     
     % Get specif tube angle for the projection
     theta = tubeAngle(p);

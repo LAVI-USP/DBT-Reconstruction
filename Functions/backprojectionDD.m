@@ -49,14 +49,9 @@
 %% 3-D Distance Driven Back-projection Code
 function data3d = backprojectionDD(proj,param)
 
-global gpuprocess
-
 % Stack of reconstructed slices
-if(gpuprocess == 1)
-    data3d = zeros(param.ny, param.nx, param.nz,'single','gpuArray');
-else
-    data3d = zeros(param.ny, param.nx, param.nz,'single');
-end
+data3d = zeros(param.ny, param.nx, param.nz,'single');
+
 
 % Map detector and object boudaries
 param.us = (param.nu:-1:0)*param.du;
@@ -69,32 +64,14 @@ param.zs = (0:1:param.nz)*param.dz + param.DAG + (param.dz/2);
 [detX,detY] = meshgrid(param.us,param.vs);
 detZ = zeros(size(detX));
 
-if(gpuprocess == 1)
-    detX = gpuArray(detX);
-    detY = gpuArray(detY);
-    detZ = gpuArray(detZ);
-end
-
 % Object boudaries coordinate sytem in (mm)
 [objX,objY] = meshgrid(param.xs,param.ys);
 objZ = param.zs;     % Z object coordinates
-
-if(gpuprocess == 1)
-    objX = gpuArray(objX);
-    objY = gpuArray(objY);
-    objZ = gpuArray(objZ);
-end
 
 % X-ray tube initial position
 tubeX = 0;
 tubeY = 0;
 tubeZ = param.DSD;
-
-if(gpuprocess == 1)
-    tubeX = gpuArray(tubeX);
-    tubeY = gpuArray(tubeY);
-    tubeZ = gpuArray(tubeZ);
-end
 
 % Iso-center position
 isoY = 0;
@@ -153,7 +130,7 @@ for p=1:nProjs
     deltaDetmY = detmY(detIstart+detIinc)-detmY(detIstart);   
         
     % For each slice
-    parfor nz=1:nSlices
+    for nz=1:nSlices
         
         % Temporary variable for each slice
         slice = zeros(nPixY,nPixX);
