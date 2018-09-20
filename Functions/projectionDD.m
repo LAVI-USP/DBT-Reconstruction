@@ -58,7 +58,7 @@ param.us = (param.nu:-1:0)*param.du;
 param.vs = (-(param.nv)/2:1:(param.nv)/2)*param.dv;
 param.xs = (param.nx:-1:0)*param.dx;
 param.ys = (-(param.ny)/2:1:(param.ny)/2)*param.dy;
-param.zs = (0:1:param.nz)*param.dz + param.DAG + (param.dz/2);
+param.zs = (0:1:param.nz-1)*param.dz + param.DAG + (param.dz/2);
 
 % Detector boudaries coordinate sytem in (mm)
 [detX,detY] = meshgrid(param.us,param.vs);
@@ -121,7 +121,7 @@ for p=1:nProjs
     % collumn of Y mapped detecotr boundaries
     detmY = detmY(:,1);        
    
-    % Pixel start index and increment
+    % Detector start index and increment
     detIstart = 1;
     detIinc = 1;    
     % Mapped detector length
