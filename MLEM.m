@@ -100,7 +100,7 @@ for iter = 1:nIter(end)
     end
     
     if(showinfo) 
-        fprintf('Itaration %d Time: %.2f\n\n',iter,allIterTime(iter,1));  
+        fprintf('Iteration %d Time: %.2f\n\n',iter,allIterTime(iter,1));  
     end
     
 end% Loop end iterations
