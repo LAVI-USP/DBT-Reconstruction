@@ -41,14 +41,14 @@ We are pleased with any contributions. Fell free to make any [pull requests](htt
 
 ## Contact:
 
-If you hava any question or suggestion, please send us an e-mail:
+If you have any question or suggestion, please send us an e-mail:
 
 - Rodrigo - rodrigo.vimieiro@gmail.com or rodrigo.vimieiro@usp.br
 - Marcelo - mvieira@sc.usp.br
 
 ## License:
 
-The toolbox is licensed under the **GNU General Public License v3.0**. Please check the [license file](https://github.com/LAVI-USP/DBT-Reconstruction/blob/master/LICENSE).
+The toolbox is licensed under the **GNU General Public License v3.0**. Please check the [licence file](https://github.com/LAVI-USP/DBT-Reconstruction/blob/master/LICENSE).
 
 ## Reference:
 
