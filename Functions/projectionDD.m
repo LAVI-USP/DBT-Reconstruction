@@ -118,7 +118,7 @@ for p=1:nProjs
     [detmX,detmY] = mapp2xy(tubeX,rtubeY,rtubeZ,detX,rdetY,rdetZ);
     
     % Z coord does not change in X direction, so we can take only one
-    % collumn of Y mapped detecotr boundaries
+    % collumn of Y mapped detector boundaries
     detmY = detmY(:,1);        
    
     % Detector start index and increment

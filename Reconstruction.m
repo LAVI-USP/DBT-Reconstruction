@@ -83,8 +83,8 @@ end
 addpath(genpath('Functions'));
 addpath(genpath('Parameters'));
 
-if(~exist('res','dir'))
-    mkdir('res')
+if(~exist('output','dir'))
+    mkdir('output')
     saveinfo = 1;
 end
 addpath('res');

@@ -46,10 +46,11 @@ parameter_mod = parameter;
 
 %% Segmentation
 Gap = 20;
+meanSlideW = 251;
 
-vertProj = sum(abs(((2^14-1)-data(:,:,5))));
-[~,Ind] = max(diff(vertProj));
-Ind = Ind-Gap; % Max positive derivative 
+vertProj = sum(abs(single(2^parameter_mod.bitDepth-1)-data(:,:,5)));	% Horizontal Profile
+[~,Ind] = max(diff(movmean(vertProj,meanSlideW)));		% Smooth the signal and takes its max positive derivative
+Ind = Ind-meanSlideW-Gap;	% Subtract the ind found to a gap
 
 % Modifies parameters based on segmentation
 parameter_mod.nu = size(vertProj(Ind:end),2);  % Number of pixels (columns)

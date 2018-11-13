@@ -65,7 +65,7 @@ for i=1:img_count
     else
         filename = strtrim(img_list(i,:).name);
         filenameSlpited = strsplit(filename, '_');
-        filenameSlpited = strsplit(filenameSlpited{2}, '.');
+        filenameSlpited = strsplit(filenameSlpited{end}, '.');
         nProj = str2double(filenameSlpited{1})+dc;
     end 
 

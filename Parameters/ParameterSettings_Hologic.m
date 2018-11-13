@@ -1,12 +1,12 @@
 %% Author: Rodrigo de Barros Vimieiro
-% Date: May, 2018
+% Date: November, 2018
 % rodrigo.vimieiro@gmail.com
 % =========================================================================
 %{
 
     DESCRIPTION:
     This is the configuration file for the tomosynthesis acquisition 
-    geometry. This geometry is specified for the GE Senographe Essential.
+    geometry. This geometry is specified for the Hologic Selenia Dimensions
 
     -----------------------------------------------------------------------
     Copyright (C) <2018>  <Rodrigo de Barros Vimieiro>
@@ -28,32 +28,32 @@
 % =========================================================================
 %% Physical Parameters Settings
 
-parameter.type = 'vct';
+parameter.type = 'hologic';
 
 % Breast voxels density
-parameter.nx = 784;    % number of voxels (columns)
-parameter.ny = 2053;    % number of voxels (rows)
-parameter.nz = 127;     % number of voxels (slices)
+parameter.nx = 1996;    % number of voxels (columns)
+parameter.ny = 2457;    % number of voxels (rows)
+parameter.nz = 78;     	% number of voxels (slices)
 
 % Detector panel pixel density
-parameter.nu = 2394;    % number of pixels (columns)
-parameter.nv = 3062;    % number of pixels (rows)
+parameter.nu = 1664;    % number of pixels (columns)
+parameter.nv = 2048;    % number of pixels (rows)
 
 % Single voxel real size (mm)
-parameter.dx = 0.1; 
-parameter.dy = 0.1;
-parameter.dz = 0.5;
+parameter.dx = 0.112; 
+parameter.dy = 0.112;
+parameter.dz = 1;
 
 % Single detector real size (mm)
-parameter.du = 0.1;   
-parameter.dv = 0.1;
+parameter.du = 0.14;   
+parameter.dv = 0.14;
 
 % X-ray source and detector distances
-parameter.DSD = 660;                            % Distance from source to detector (mm)
-parameter.DSO = 574.7;                          % Distance from source to the top of object (mm)
-parameter.DDR = 40;                             % Distance from detector to pivot (mm)
+parameter.DSD = 700;                            % Distance from source to detector (mm)
+parameter.DSO = 597;                            % Distance from source to the top of object (mm)
+parameter.DDR = 0;                              % Distance from detector to pivot (mm)
 parameter.DSR = parameter.DSD - parameter.DDR;  % Distance from source to pivot (mm)
-parameter.DAG = 22;                             % Distance of Air Gap (mm)    
+parameter.DAG = 25;                             % Distance of Air Gap (mm)    
 
 % Detector and object full real sizes (mm)
 parameter.sx = parameter.nx.*parameter.dx;  
@@ -71,28 +71,22 @@ parameter.us = (parameter.nu-1:-1:0)*parameter.du;
 parameter.vs = (-(parameter.nv-1)/2:1:(parameter.nv-1)/2)*parameter.dv;
 
 % Number of Projections
-parameter.nProj = 9;  
+parameter.nProj = 15;  
 
 % Angle settings (Degrees)
-parameter.tubeAngle = 25;   % Tube Angle
+parameter.tubeAngle = 15;   % Tube Angle
 parameter.tubeDeg = linspace(-parameter.tubeAngle/2,parameter.tubeAngle/2,parameter.nProj);
 
-parameter.detAngle = 0;   % Detector Angle
+parameter.detAngle = 4.2;   % Detector Angle
 parameter.detectorDeg = linspace(-parameter.detAngle/2,parameter.detAngle/2,parameter.nProj);
 
 %% General parameters
 
 % Slice range to be saved
-parameter.sliceRange = 1:parameter.nz;
+parameter.sliceRange = 1:parameter.nz; 
 % Region of interest (ROI) to store
-parameter.iROI = 1:parameter.ny;    %424:1574;  
-parameter.jROI = 1:parameter.nx;    %820:970;  
+parameter.iROI = 1:parameter.ny;     
+parameter.jROI = 1:parameter.nx;      
 
 % Bit number quatization
 parameter.bitDepth = [];     % Load from dicom header
-
-% Noise parameters
-parameter.tau = -17;  
-parameter.lambda = 0.1; % (Deve ser uma matriz)
-parameter.sigmaE = 7.03;
- 
