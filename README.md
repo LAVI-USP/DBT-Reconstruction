@@ -57,6 +57,10 @@ If you use the toolbox, we will be very grateful if you refer to this [paper](ht
 > Vimieiro, R. B., Borges, L. R., Vieira, M. A. C. (2019) Open-source reconstruction toolbox for digital
 breast tomosynthesis. In: Costa-Felix R., Machado J. C., Alvarenga A. V. (eds) XXVI Brazilian Congress on Biomedical Engineering 2018. IFMBE Proceedings, vol 70/1. Springer, Singapore.
 
+## Acknowledgments:
+
+This work was supported by the São Paulo Research Foundation ([FAPESP](http://www.fapesp.br/) grant 2016/25750-0) and by the National Council for Scientific and Technological Development ([CNPq](http://www.cnpq.br/)). Nobody does anything alone, so we would like to thank the contribution of our lab members and the [Barretos Love Hospital](www.hcancerbarretos.com.br) for providing the images of DBT.
+
 ---
 
 Laboratory of Computer Vision ([Lavi](http://iris.sel.eesc.usp.br/lavi/))  
