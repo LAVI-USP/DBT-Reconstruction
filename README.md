@@ -59,7 +59,7 @@ breast tomosynthesis. In: Costa-Felix R., Machado J. C., Alvarenga A. V. (eds) X
 
 ## Acknowledgments:
 
-This work was supported by the São Paulo Research Foundation ([FAPESP](http://www.fapesp.br/) grant 2016/25750-0) and by the National Council for Scientific and Technological Development ([CNPq](http://www.cnpq.br/)). Nobody does anything alone, so we would like to thank the contribution of our lab members and the [Barretos Love Hospital](www.hcancerbarretos.com.br) for providing the images of DBT.
+This work was supported by the São Paulo Research Foundation ([FAPESP](http://www.fapesp.br/) grant 2016/25750-0) and by the National Council for Scientific and Technological Development ([CNPq](http://www.cnpq.br/)). Nobody does anything alone, so we would like to thank the contribution of our lab members and the [Barretos Love Hospital](https://www.hcancerbarretos.com.br) for providing the images of DBT.
 
 ---
 
