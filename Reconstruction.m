@@ -7,16 +7,16 @@
 %     DESCRIPTION:
 % 
 %     The goal of this software is to present an open source reconstruction 
-%     toolbox, which features the three basic types of DBT reconstruction, 
+%     toolbox, which features the four basic types of DBT reconstruction, 
 %     with the possibility of different acquisition geometries. This 
-%     toolbox is intended for academic usage and it aims at expanding the 
-%     academic research in this field.  Since it is an open source toolbox, 
-%     researchers are welcome to contribute to the current version of the 
-%     software.
+%     toolbox is intended for academic usage. Since it is an open source 
+%     toolbox, researchers are welcome to contribute to the current version 
+%     of the software.
 % 
 %     Department of Electrical and Computer Engineering, 
-%     São Carlos School of Engineering, University of São Paulo, 
-%     São Carlos, Brazil
+%     São Carlos School of Engineering, 
+%     University of São Paulo, 
+%     São Carlos, Brazil.
 % 
 %     ---------------------------------------------------------------------
 %     Copyright (C) <2018>  <Rodrigo de Barros Vimieiro>
@@ -50,29 +50,17 @@ noise = uint8(0);           % Add noise to phantom projections
 
 %% GUI - Data decision
 
-answer = questdlg('Load Dicom file or create a Shepp-Logan Phantom?', ...
+answer = questdlg('Load Clinical images or create a Shepp-Logan Phantom?', ...
 	'Data decision', ...
-	'Dicom','Shepp-Logan','Dicom');
+	'Clinical','Shepp-Logan','Shepp-Logan');
 % Handle response
 switch answer
-    case 'Dicom'
-        answer = questdlg('Clinical or VCT?', ...
-            'Data decision', ...
-            'Clinical','VCT','Clinical');
-        switch answer
-            case 'Clinical'
-                fprintf('Waiting for Clinical images \n')
-                data = 1;
-            case 'VCT'
-                fprintf('Waiting for VCT images \n')
-                data = 2;
-            otherwise
-                fprintf('Cancelled by user \n');
-                return
-        end
+    case 'Clinical'
+        fprintf('Waiting for Clinical images \n')
+        data = 1;        
     case 'Shepp-Logan'
         fprintf('Creating a Shepp-Logan phantom \n')
-        data = 3;
+        data = 2;
     otherwise
         fprintf('Cancelled by user \n');
     	return;    
@@ -87,26 +75,19 @@ if(~exist('output','dir'))
     mkdir('output')
     saveinfo = 1;
 end
-addpath('res');
+addpath('output');
 
-if(data == 1 || data == 2)   %   ** Dicom data **
+if(data == 1)   %   ** Dicom data **
     
-    if(data==1)
-        ParameterSettings_GE
-        if(~exist(['res',filesep,'Clinical'],'dir'))
-            mkdir(['res',filesep,'Clinical'])
-        end
-    else
-        ParameterSettings_VCT
-        if(~exist(['res',filesep,'VCT'],'dir'))
-            mkdir(['res',filesep,'VCT'])
-        end
+    ParameterSettings_GE
+    if(~exist(['output',filesep,'Clinical'],'dir'))
+        mkdir(['output',filesep,'Clinical'])
     end
            
     % Load Projection Data    
     uiwait(msgbox('Select the path of projection Dicom files.','Dicom','Warn'));
     path_User = userpath;
-    path_ProjData = uigetdir(path_User(1:end-1)); 
+    path_ProjData = uigetdir(path_User); 
     
     if(path_ProjData == 0)
         fprintf('Cancelled by user \n');
@@ -120,14 +101,14 @@ if(data == 1 || data == 2)   %   ** Dicom data **
         [dataProj,parameter] = dataPreprocess(dataProj,parameter);
     end
     
-else    %                   ** Shepp-Logan data **
+else    %   ** Shepp-Logan data **
     
     ParameterSettings_Phantom;
     
-    if(~exist(['res',filesep,'Shepp-Logan'],'dir'))
-        mkdir(['res',filesep,'Shepp-Logan'])
+    if(~exist(['output',filesep,'Shepp-Logan'],'dir'))
+        mkdir(['output',filesep,'Shepp-Logan'])
     end
-    addpath(['res',filesep,'Shepp-Logan']);
+    addpath(['output',filesep,'Shepp-Logan']);
 
     % Create Shepp-Logan phantom
     data3d = single(phantom3d('Modified Shepp-Logan', parameter.nz));   
@@ -142,7 +123,7 @@ else    %                   ** Shepp-Logan data **
             dataProj = insertNoise(dataProj,parameter); % Insert noise in projs
         end
         if(saveinfo)
-            save(['res',filesep,'Shepp-Logan',filesep,'proj.mat'],'dataProj')
+            save(['output',filesep,'Shepp-Logan',filesep,'proj.mat'],'dataProj')
             infoDicom = [];
         else
             load proj.mat
@@ -184,11 +165,11 @@ end
 % end
 
 fprintf('Finished \n');
-fprintf('Please, check "res" folder for results \n');
+fprintf('Please, check "output" folder for results \n');
 
 %% Show info
 
-if(animation && data == 3)
+if(animation && data == 2)
     % Create a figure of screen size
     figureScreenSize()
     % 3D Backprojection Visualization
