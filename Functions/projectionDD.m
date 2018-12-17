@@ -4,7 +4,7 @@
 % =========================================================================
 %{
 % -------------------------------------------------------------------------
-%                 projectionDD(data3d,param)
+%                 projectionDD(data3d,param,projNumber)
 % -------------------------------------------------------------------------
 %     DESCRIPTION:
 %     This function calculates the volume projection based on the
@@ -17,6 +17,7 @@
 % 
 %     - data3d = 3D volume for projection 
 %     - param = Parameter of all geometry
+%     - projNumber = Vector with projections numbers to be processed
 %
 %     OUTPUT:
 % 
@@ -47,10 +48,7 @@
 %}
 % =========================================================================
 %% 3-D Distance Driven Projection Code
-function proj = projectionDD(data3d,param)
-
-% Stack of projections
-proj = zeros(param.nv, param.nu, param.nProj,'single');
+function proj = projectionDD(data3d,param,projNumber)
 
 
 % Map detector and object boudaries
@@ -93,17 +91,34 @@ nProjs = param.nProj;
 % Voxel size on Z
 pixsZ = param.dz; 
 
+% Test if there's specific angles
+if(isempty(projNumber))
+    projNumber = 1:nProjs;
+else
+    if(max(projNumber(:)) <= nProjs)
+        nProjs = size(projNumber,2);
+    else
+        error('Projection number exceeds the maximum for the equipment.')
+    end
+end
+
+% Stack of projections
+proj = zeros(param.nv, param.nu, nProjs,'single');
+
 % For each projection
 for p=1:nProjs
     
     % Temporary variable to acumulate all projection from the slices
     proj_tmp = zeros(nDetY,nDetX,'single');
     
+    % Get specific projection number
+    projN = projNumber(p);
+    
     % Get specif tube angle for the projection
-    theta = tubeAngle(p);
+    theta = tubeAngle(projN);
     
     % Get specif detector angle for the projection
-    phi = detAngle(p);
+    phi = detAngle(projN);
     
     % Tubre rotation
     rtubeY = ((tubeY - isoY)*cos(theta)-(tubeZ - isoZ)*sin(theta) )+isoY;

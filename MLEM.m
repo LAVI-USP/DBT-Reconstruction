@@ -62,7 +62,7 @@ reconData3d = zeros(parameter.ny, parameter.nx, parameter.nz,'single');
 reconData3d(:) = 1;
 
 % Volume normalization
-vol_norm = backprojection(ones(parameter.nv, parameter.nu, parameter.nProj, 'single'), parameter);
+vol_norm = backprojection(ones(parameter.nv, parameter.nu, parameter.nProj, 'single'), parameter,[]);
 
 if(showinfo)
     fprintf('----------------\nStarting MLEM Iterations... \n\n')
@@ -74,11 +74,11 @@ for iter = 1:nIter(end)
     tStart = tic;
     
     % Error ratio between raw data and projection of estimated data  
-    proj_ratio = proj./projection(reconData3d,parameter);
+    proj_ratio = proj./projection(reconData3d,parameter,[]);
     proj_ratio(isnan(proj_ratio)) = 0;
     proj_ratio(isinf(proj_ratio)) = 0;
 
-    upt_term = backprojection(proj_ratio, parameter);
+    upt_term = backprojection(proj_ratio, parameter,[]);
     upt_term = upt_term ./vol_norm; % Volume normalization
     upt_term(isnan(upt_term)) = 0;  
     upt_term(isinf(upt_term)) = 0;

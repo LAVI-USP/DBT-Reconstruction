@@ -4,7 +4,7 @@
 % =========================================================================
 %{
 % -------------------------------------------------------------------------
-%                 backprojection(proj,param)
+%                 backprojection(proj,param,projNumber)
 % -------------------------------------------------------------------------
 %     DESCRIPTION:
 %     This function makes the simple backprojection of 2D images, in order 
@@ -21,6 +21,7 @@
 % 
 %     - proj = 2D projection images 
 %     - param = Parameter of all geometry
+%     - projNumber = Vector with projections numbers to be processed
 % 
 %     OUTPUT:
 % 
@@ -46,9 +47,31 @@
 %}
 % =========================================================================
 %% Backprojection Code
-function data3d = backprojection(proj,param)
+function data3d = backprojection(proj,param,projNumber)
 
 global gpuprocess
+
+% Get parameters from struct
+DSR = param.DSR;
+DDR = param.DDR;
+tubeAngle = deg2rad(param.tubeDeg);
+numVPixels = param.nv;
+numUPixels = param.nu;
+numSlices = param.nz;
+numProjs = param.nProj;
+zCoords = param.zs;     % Z object coordinates
+
+% Test if there's specific angles
+if(isempty(projNumber))
+    projNumber = 1:numProjs;
+else
+    if(max(projNumber(:)) <= numProjs)
+        numProjs = size(projNumber,2);
+    else
+        error('Projection number exceeds the maximum for the equipment.')
+    end
+end
+
 
 % Stack of reconstructed slices
 if(gpuprocess == 1)
@@ -64,21 +87,14 @@ if(gpuprocess == 1)
     yCoord = gpuArray(yCoord);
 end
 
-% Get parameters from struct
-DSR = param.DSR;
-DDR = param.DDR;
-tubeAngle = deg2rad(param.tubeDeg);
-numVPixels = param.nv;
-numUPixels = param.nu;
-numSlices = param.nz;
-numProjs = param.nProj;
-zCoords = param.zs;     % Z object coordinates
-
 % For each projection
 for p=1:numProjs
     
-    % Get specif angle for the backprojection
-    teta = tubeAngle(p);
+    % Get specific projection number
+    projN = projNumber(p);
+    
+    % Get specific angle for the backprojection
+    teta = tubeAngle(projN);
     
     % Get specif projection from stack
     proj_tmp = proj(:,:,p);

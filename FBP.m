@@ -66,7 +66,7 @@ end
 
 tStart = tic;
 % Make the Backprojection
-reconData3d = backprojection(proj,parameter);
+reconData3d = backprojection(proj,parameter,[]);
 info.BackprojectTime = num2str(toc(tStart));
 
 % Store only interested slices and ROIs

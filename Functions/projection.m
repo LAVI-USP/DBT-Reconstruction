@@ -4,7 +4,7 @@
 % =========================================================================
 %{
 % -------------------------------------------------------------------------
-%                 projection(data3d,param)
+%                 projection(data3d,param,projNumber)
 % -------------------------------------------------------------------------
 %     DESCRIPTION:
 %     This function calculates for each detector pixel, which voxel is
@@ -17,6 +17,7 @@
 % 
 %     - data3d = 3D volume for projection 
 %     - param = Parameter of all geometry
+%     - projNumber = Vector with projections numbers to be processed
 %
 %     OUTPUT:
 % 
@@ -42,27 +43,9 @@
 %}
 % =========================================================================
 %% Projection Code
-function proj = projection(data3d,param)
+function proj = projection(data3d,param,projNumber)
 
 global gpuprocess animation
-
-% Stack of projections
-if(gpuprocess == 1)
-    proj = zeros(param.nv, param.nu, param.nProj,'single','gpuArray');
-else
-    proj = zeros(param.nv, param.nu, param.nProj,'single');
-end
-
-% Detector Coordinate sytem in (mm)
-[uCoord,vCoord] = meshgrid(param.us,param.vs);
-if(gpuprocess == 1)
-    uCoord = gpuArray(uCoord);
-    vCoord = gpuArray(vCoord);
-end
-
-% Object Coordinate sytem in (mm) (just for 3D visualization)
-[xCoord,yCoord] = meshgrid(param.xs,param.ys);
-[   ~  ,zCoord] = meshgrid(param.ys,param.zs);
 
 % Get parameters from struct
 DSR = param.DSR;
@@ -76,13 +59,43 @@ numSlices = param.nz;
 numProjs = param.nProj;
 zCoords = param.zs;     % Z object coordinates
 
-% sliceRange = param.sliceRange;
+% Test if there's specific angles
+if(isempty(projNumber))
+    projNumber = 1:numProjs;
+else
+    if(max(projNumber(:)) <= numProjs)
+        numProjs = size(projNumber,2);
+    else
+        error('Projection number exceeds the maximum for the equipment.')
+    end
+end
+
+% Stack of projections
+if(gpuprocess == 1)
+    proj = zeros(param.nv, param.nu, numProjs,'single','gpuArray');
+else
+    proj = zeros(param.nv, param.nu, numProjs,'single');
+end
+
+% Detector Coordinate sytem in (mm)
+[uCoord,vCoord] = meshgrid(param.us,param.vs);
+if(gpuprocess == 1)
+    uCoord = gpuArray(uCoord);
+    vCoord = gpuArray(vCoord);
+end
+
+% Object Coordinate sytem in (mm) (just for 3D visualization)
+[xCoord,yCoord] = meshgrid(param.xs,param.ys);
+[   ~  ,zCoord] = meshgrid(param.ys,param.zs);
 
 % For each projection
 for p=1:numProjs
     
-    % Get specif tube angle for the projection
-    teta = tubeAngle(p);
+    % Get specific projection number
+    projN = projNumber(p);
+    
+    % Get specific tube angle for the projection
+    teta = tubeAngle(projN);
     
     % Temporary projection variable to acumulate all projection from the slices
     proj_tmp = zeros(numVPixels,numUPixels,'single');
@@ -108,7 +121,7 @@ for p=1:numProjs
                    ((DSR.*cos(teta))-zCoords(nz));
                
             % Draw 3D animation   
-            draw3d(xCoord,yCoord,zCoord,puCoord,pvCoord,param,p,teta);
+            draw3d(xCoord,yCoord,zCoord,puCoord,pvCoord,param,projN,teta);
         end              
              
         % Coordinate in Pixel of slice plane axis origin
@@ -133,7 +146,7 @@ for p=1:numProjs
         imshow(imrotate(data3d(:,:,round(numSlices/2)),90),[])
         title('Slice');axis on;
         subplot(2,2,4)
-        imshow(imrotate(proj(:,:,p),90),[]); title(['Proj ',num2str(p)]);axis on;
+        imshow(imrotate(proj(:,:,p),90),[]); title(['Proj ',num2str(projN)]);axis on;
     end 
     
 end % Loop end Projections

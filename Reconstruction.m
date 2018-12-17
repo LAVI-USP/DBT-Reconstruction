@@ -118,7 +118,7 @@ else    %   ** Shepp-Logan data **
     if(animation || saveinfo)
         % Create a figure of screen size
         figureScreenSize()
-        dataProj = projection(data3d,parameter);
+        dataProj = projection(data3d,parameter,[]);
         if(noise)
             dataProj = insertNoise(dataProj,parameter); % Insert noise in projs
         end

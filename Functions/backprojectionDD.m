@@ -17,6 +17,7 @@
 % 
 %     - proj = 2D projections for each angle 
 %     - param = Parameter of all geometry
+%     - projNumber = Vector with projections numbers to be processed
 %
 %     OUTPUT:
 % 
@@ -47,7 +48,7 @@
 %}
 % =========================================================================
 %% 3-D Distance Driven Back-projection Code
-function data3d = backprojectionDD(proj,param)
+function data3d = backprojectionDD(proj,param,projNumber)
 
 % Stack of reconstructed slices
 data3d = zeros(param.ny, param.nx, param.nz,'single');
@@ -93,19 +94,33 @@ nProjs = param.nProj;
 % Voxel size on Z
 pixsZ = param.dz; 
 
+% Test if there's specific angles
+if(isempty(projNumber))
+    projNumber = 1:nProjs;
+else
+    if(max(projNumber(:)) <= nProjs)
+        nProjs = size(projNumber,2);
+    else
+        error('Projection number exceeds the maximum for the equipment.')
+    end
+end
+
 proj = fliplr(proj);
 
 % For each projection
 for p=1:nProjs
     
+    % Get specific projection number
+    projN = projNumber(p);
+    
     % Get specifc projection for specif angle
     projAngle = proj(:,:,p);
     
     % Get specif tube angle for the projection
-    theta = tubeAngle(p);
+    theta = tubeAngle(projN);
     
     % Get specif detector angle for the projection
-    phi = detAngle(p);
+    phi = detAngle(projN);
     
     % Tubre rotation
     rtubeY = ((tubeY - isoY)*cos(theta)-(tubeZ - isoZ)*sin(theta) )+isoY;
