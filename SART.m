@@ -48,6 +48,8 @@ function allreconData3d = SART(proj,nIter,parameter)
 
 global showinfo animation
 
+numProjs = parameter.nProj;
+
 info.startDateAndTime = char(datetime('now','Format','MM-dd-yyyy''  ''HH:mm:ss'));
 info.reconMeth = 'SART';
 
@@ -61,11 +63,11 @@ reconData3d = zeros(parameter.ny, parameter.nx, parameter.nz,'single');
 
 % Pre calculation of Projection normalization
 tempvar = animation; animation = 0; 
-proj_norm = projection(ones(parameter.ny, parameter.nx, parameter.nz, 'single'),parameter);
+proj_norm = projection(ones(parameter.ny, parameter.nx, parameter.nz, 'single'),parameter, []);
 animation = tempvar; clear tempvar;
 
 % Pre calculation of Backprojection normalization
-vol_norm = backprojection(ones(parameter.nv, parameter.nu, parameter.nProj, 'single'), parameter);
+vol_norm = backprojection(ones(parameter.nv, parameter.nu, parameter.nProj, 'single'), parameter, []);
 
 if(showinfo)
     fprintf('----------------\nStarting SART Iterations... \n\n')
@@ -74,19 +76,24 @@ end
 % Start Iterations
 for iter = 1:nIter(end)
     tStart = tic;
-    
-    proj_diff = proj - projection(reconData3d,parameter); % Error between raw data and projection of estimated data  
-    
-    proj_diff = proj_diff ./ proj_norm; % Projection normalization
-    proj_diff(isnan(proj_diff)) = 0;
-    proj_diff(isinf(proj_diff)) = 0;
-    
-    upt_term = backprojection(proj_diff, parameter);
-    upt_term = upt_term ./ vol_norm; % Volume normalization
-    upt_term(isnan(upt_term)) = 0;
-    upt_term(isinf(upt_term)) = 0;
+    % For each projection
+    for p=1:numProjs
+        
+        % Error between raw data and projection of estimated data 
+        proj_diff = proj(:,:,p) - projection(reconData3d,parameter,p);  
 
-    reconData3d = reconData3d + upt_term; % Updates the previous estimation 
+        proj_diff = proj_diff ./ proj_norm(:,:,p); % Projection normalization
+        proj_diff(isnan(proj_diff)) = 0;
+        proj_diff(isinf(proj_diff)) = 0;
+
+        upt_term = backprojection(proj_diff,parameter,p);
+        upt_term = upt_term ./ vol_norm; % Volume normalization
+        upt_term(isnan(upt_term)) = 0;
+        upt_term(isinf(upt_term)) = 0;
+
+        % Updates the previous estimation 
+        reconData3d = reconData3d + upt_term; 
+    end
         
     % Truncate to highest and minimum value
     reconData3d(reconData3d>highestValue) = highestValue;
