@@ -164,6 +164,12 @@ end
 %     saveData(dataRecon3d,parameter,answer,[],infoDicom);
 % end
 
+%                       ## Uncomment to use ##
+% dataRecon3d = SIRT(dataProj,nIter,parameter);
+% if(saveinfo)
+%     saveData(dataRecon3d,parameter,answer,[],infoDicom);
+% end
+
 fprintf('Finished \n');
 fprintf('Please, check "output" folder for results \n');
 
