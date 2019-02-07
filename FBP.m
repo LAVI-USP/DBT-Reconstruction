@@ -26,6 +26,10 @@
 %     - reconData3d{2} = Struct informations like - Filter and Bp Time
 % 
 %     Reference: Jiang Hsieh's book (second edition)
+%     Reference: Fessler, J. A.: Fundamentals of CT Reconstruction in 2D 
+%     and 3D. In: Brahme, A. (eds.) Comprehensive Biomedical Physics, 
+%     1st ed., vol. 2, pp 263-295. Elsevier, Netherlands (2014).
+%     doi:10.1016/B978-0-444-53632-7.00212-4.
 %     Reference: Fessler Book -> (http://web.eecs.umich.edu/~fessler/book/c-tomo.pdf)
 % 
 %     -----------------------------------------------------------------------

@@ -24,8 +24,8 @@
 %     - allreconData3d{1,...} = Cell with Volumes of each specific iteration.
 %     - allreconData3d{2,...} = Cell with informations of each specific iteration.
 % 
-%     Reference: Medical Image Reconstruction A Conceptual Tutorial - 
-%     Gengsheng Lawrence Zeng (2010)
+%     Reference: Sidky, E. Y., 8-Iterative image reconstruction design 
+%     for digital breast tomosynthesis, Tomosynthesis Imaging (2014).
 % 
 %     ---------------------------------------------------------------------
 %     Copyright (C) <2018>  <Rodrigo de Barros Vimieiro>

@@ -92,7 +92,7 @@ parameter.jROI = 1:parameter.nx;
 parameter.bitDepth = 1;
 
 % Noise parameters
-parameter.tau = -17;  
-parameter.lambda = 0.1; % (Should be a matrix) Noise is signal dependent
-parameter.sigmaE = 7.03;
+parameter.tau = -2;  
+parameter.lambda = 0.2;
+parameter.sigmaE = 3;
  

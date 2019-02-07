@@ -25,6 +25,10 @@
 %     - filteredProj = Filtered projections.
 % 
 %     Reference: Jiang Hsieh's book (second edition)
+%     Reference: Fessler, J. A.: Fundamentals of CT Reconstruction in 2D 
+%     and 3D. In: Brahme, A. (eds.) Comprehensive Biomedical Physics, 
+%     1st ed., vol. 2, pp 263-295. Elsevier, Netherlands (2014).
+%     doi:10.1016/B978-0-444-53632-7.00212-4.
 %     Reference: Fessler Book -> (http://web.eecs.umich.edu/~fessler/book/c-tomo.pdf)
 % 
 %     ---------------------------------------------------------------------
@@ -66,9 +70,6 @@ end
 % Compute weighted projections (Fessler Book Eq. (3.10.6))
 weightFunction = param.DSO ./ sqrt((param.DSD.^2)+(vCoord.^2)+(uCoord.^2));
                    
-% weightFunction = (param.DSO.*sqrt(1+((uCoord./param.DSD).^2)))./... OLD
-%                    (sqrt((param.DSD.^2)+(vCoord.^2)+(uCoord.^2)));               
-
 % Apply weighting function on each proj
 for i=1:param.nProj
     filteredProj(:,:,i) = proj(:,:,i).* weightFunction;

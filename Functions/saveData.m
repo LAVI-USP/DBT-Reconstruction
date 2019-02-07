@@ -59,7 +59,7 @@ folder = optionals{3};
 infoDicom = optionals{4};
 
 if(isempty(folder)) 
-    folder='output';
+    folder='Output';
 else
     mkdir([folder,filesep,title]);
 end
