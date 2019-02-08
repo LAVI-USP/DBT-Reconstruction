@@ -40,13 +40,12 @@
 close all;clear;clc
 
 %% Global parameters
-global showinfo saveinfo animation gpuprocess noise
+global showinfo saveinfo animation gpuprocess 
 
 showinfo = uint8(1);        % Show projection animation
 saveinfo = uint8(1);        % Save reconstructed volume
 animation = uint8(1);       % Graphical animation
 gpuprocess = uint8(0);      % Processing on GPU
-noise = uint8(0);           % Add noise to phantom projections
 
 %% GUI - Data decision
 
@@ -119,9 +118,7 @@ else    %   ** Shepp-Logan data **
         % Create a figure of screen size
         figureScreenSize()
         dataProj = projection(data3d,parameter,[]);
-        if(noise)
-            dataProj = insertNoise(dataProj,parameter); % Insert noise in projs
-        end
+
         if(saveinfo)
             save(['output',filesep,'Shepp-Logan',filesep,'proj.mat'],'dataProj')
             infoDicom = [];
