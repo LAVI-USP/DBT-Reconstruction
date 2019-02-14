@@ -70,17 +70,17 @@ end
 addpath(genpath('Functions'));
 addpath(genpath('Parameters'));
 
-if(~exist('output','dir'))
-    mkdir('output')
+if(~exist('Output','dir'))
+    mkdir('Output')
     saveinfo = 1;
 end
-addpath('output');
+addpath('Output');
 
 if(data == 1)   %   ** Dicom data **
     
     ParameterSettings_GE
-    if(~exist(['output',filesep,'Clinical'],'dir'))
-        mkdir(['output',filesep,'Clinical'])
+    if(~exist(['Output',filesep,'Clinical'],'dir'))
+        mkdir(['Output',filesep,'Clinical'])
     end
            
     % Load Projection Data    
@@ -104,10 +104,10 @@ else    %   ** Shepp-Logan data **
     
     ParameterSettings_Phantom;
     
-    if(~exist(['output',filesep,'Shepp-Logan'],'dir'))
-        mkdir(['output',filesep,'Shepp-Logan'])
+    if(~exist(['Output',filesep,'Shepp-Logan'],'dir'))
+        mkdir(['Output',filesep,'Shepp-Logan'])
     end
-    addpath(['output',filesep,'Shepp-Logan']);
+    addpath(['Output',filesep,'Shepp-Logan']);
 
     % Create Shepp-Logan phantom
     data3d = single(phantom3d('Modified Shepp-Logan', parameter.nz));   
@@ -120,7 +120,7 @@ else    %   ** Shepp-Logan data **
         dataProj = projection(data3d,parameter,[]);
 
         if(saveinfo)
-            save(['output',filesep,'Shepp-Logan',filesep,'proj.mat'],'dataProj')
+            save(['Output',filesep,'Shepp-Logan',filesep,'proj.mat'],'dataProj')
             infoDicom = [];
         else
             load proj.mat
@@ -168,7 +168,7 @@ end
 % end
 
 fprintf('Finished \n');
-fprintf('Please, check "output" folder for results \n');
+fprintf('Please, check "Output" folder for results \n');
 
 %% Show info
 
