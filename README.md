@@ -38,6 +38,9 @@ We are pleased with any contributions. Fell free to make any [pull requests](htt
 
 ![Imgur](https://i.imgur.com/R9tB35f.gif?2)
 
+## Toolbox manual:
+
+You can download the preliminary version [here](https://drive.google.com/open?id=1djW9QzB8bEjT1KBqStUR0gVOViPc_SO3). Please, send me any advice or correction related to this file.
 
 ## Contact:
 
