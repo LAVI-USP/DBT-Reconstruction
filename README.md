@@ -46,8 +46,8 @@ You can download the preliminary version [here](https://drive.google.com/open?id
 
 If you have any question or suggestion, please send us an e-mail:
 
-- Rodrigo - rodrigo.vimieiro@gmail.com or rodrigo.vimieiro@usp.br
-- Marcelo - mvieira@sc.usp.br
+- Rodrigo - rodrigo dot vimieiro at gmail dot com
+- Marcelo - mvieira at sc dot usp dot br
 
 ## License:
 
@@ -59,6 +59,10 @@ If you use the toolbox, we will be very grateful if you refer to this [paper](ht
 
 > Vimieiro, R. B., Borges, L. R., Vieira, M. A. C. (2019) Open-source reconstruction toolbox for digital
 breast tomosynthesis. In: Costa-Felix R., Machado J. C., Alvarenga A. V. (eds) XXVI Brazilian Congress on Biomedical Engineering 2018. IFMBE Proceedings, vol 70/1. Springer, Singapore.
+
+## Citations:
+
+You can find [here](https://scholar.google.com.br/scholar?oi=bibs&hl=pt-BR&cites=3156269064066227282) the papers that have used the toolbox.
 
 ## Acknowledgments:
 
