@@ -55,10 +55,9 @@ The toolbox is licensed under the **GNU General Public License v3.0**. Please ch
 
 ## Reference:
 
-If you use the toolbox, we will be very grateful if you refer to this [paper](https://www.researchgate.net/publication/328583525_Open-source_reconstruction_toolbox_for_digital_breast_tomosynthesis):
+If you use the toolbox, we will be very grateful if you refer to this [paper](https://doi.org/10.1007/978-981-13-2517-5_53):
 
-> Vimieiro, R. B., Borges, L. R., Vieira, M. A. C. (2019) Open-source reconstruction toolbox for digital
-breast tomosynthesis. In: Costa-Felix R., Machado J. C., Alvarenga A. V. (eds) XXVI Brazilian Congress on Biomedical Engineering 2018. IFMBE Proceedings, vol 70/1. Springer, Singapore.
+> Vimieiro R.B., Borges L.R., Vieira M.A.C. (2019) Open-Source Reconstruction Toolbox for Digital Breast Tomosynthesis. In: Costa-Felix R., Machado J., Alvarenga A. (eds) XXVI Brazilian Congress on Biomedical Engineering. IFMBE Proceedings, vol 70/2. Springer, Singapore.
 
 ## Citations:
 
