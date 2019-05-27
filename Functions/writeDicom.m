@@ -50,7 +50,7 @@ if(strcmp(parameter.type,'vct')||strcmp(parameter.type,'hologic'))
 end
 
 % Adjust data to save, based on the recon method
-if(strcmp(reconmeth,'BP')||strcmp(reconmeth,'MLEM')||strcmp(reconmeth,'SART'))
+if(strcmp(reconmeth,'BP')||strcmp(reconmeth,'MLEM')||strcmp(reconmeth,'SART')||strcmp(reconmeth,'SIRT'))
     for k=1:size(dataRecon3d,2)
         dataRecon3d{k} = (2^14-1).*mat2gray(dataRecon3d{k});
         dataRecon3d{k} = uint16(dataRecon3d{k});
@@ -63,6 +63,8 @@ else
             dataRecon3d{k} = uint16(dataRecon3d{k});
         end
         
+    else
+        error('Invalid recon method');
     end
 end
   
