@@ -40,7 +40,7 @@ We are pleased with any contributions. Fell free to make any [pull requests](htt
 
 ## Toolbox manual:
 
-You can download the preliminary version [here](https://drive.google.com/open?id=1djW9QzB8bEjT1KBqStUR0gVOViPc_SO3). Please, send me any advice or correction related to this file.
+You can download the preliminary version [here](https://drive.google.com/open?id=1djW9QzB8bEjT1KBqStUR0gVOViPc_SO3). I also created a [wiki page](https://github.com/LAVI-USP/DBT-Reconstruction/wiki/Toolbox-Manual) with the manual. Please, send me any advice or correction related to this file.
 
 ## Contact:
 
