@@ -11,11 +11,11 @@ Open source reconstruction toolbox for digital breast tomosynthesis
 
  1. Download the toolbox or clone the directory [here](https://github.com/LAVI-USP/DBT-Reconstruction.git).
  
- 3. The toolbox was tested on **Windows** 10 x64, **Linux** (Ubuntu) x64, and **MacoS** High Sierra machines, with Matlab 2015a and 2017b. 
+ 2. The toolbox was tested on **Windows** 10 x64, **Linux** (Ubuntu) x64, and **MacoS** High Sierra machines, with Matlab 2015a and 2017b.
+
+ 3. In order to use CUDA or mex files, please follow the instructions [here](https://github.com/LAVI-USP/DBT-Reconstruction/blob/master/Functions/Sources/README.md). These files were only compiled and tested on **Windows** 10 x64.
 
 Please report issues [here](https://github.com/LAVI-USP/DBT-Reconstruction/issues).
-
-> **Note:** In order to use CUDA, make sure you have a GPU that works with CUDA and everything is updated. This [benchmark](https://www.mathworks.com/help/distcomp/examples/benchmarking-a-b-on-the-gpu.html) is very helpful to test your GPU.
 
 ## Contribute? 
 
@@ -72,4 +72,4 @@ This work was supported by the São Paulo Research Foundation ([FAPESP](http://w
 Laboratory of Computer Vision ([Lavi](http://iris.sel.eesc.usp.br/lavi/))  
 Department of Electrical and Computer Engineering  
 São Carlos School of Engineering, University of São Paulo  
-São Carlos - Brazil  
+São Carlos - Brazil
