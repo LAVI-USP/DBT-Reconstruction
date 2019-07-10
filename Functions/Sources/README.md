@@ -56,7 +56,8 @@ If you want to compile mex-CUDA files, make sure to follow the **(optional)** st
 | MATLAB            | 2017b 
 | Visual Studio IDE | 2019      
 | CUDA Toolkit      | 10.1  
-| GPU               | GeForce GTX 1050 Ti    
+| GPU               | GeForce GTX 1050 Ti  
+| Windows           | 10     
 
 ## Having problems?
 
