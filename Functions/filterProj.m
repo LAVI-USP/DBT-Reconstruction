@@ -51,21 +51,10 @@
 %% Filtering Code
 function filteredProj = filterProj(proj,param,cutoff)
 
-global gpuprocess
-
-if(gpuprocess == 0)
-    filteredProj = zeros(size(proj),'single');
-else
-    filteredProj = zeros(size(proj),'single','gpuArray');
-end
+filteredProj = zeros(size(proj),'single');
 
 % Detector Coordinate sytem in (mm)
 [uCoord,vCoord] = meshgrid(param.us,param.vs);
-
-if(gpuprocess == 1)
-    uCoord = gpuArray(single(uCoord));
-    vCoord = gpuArray(single(vCoord));
-end
 
 % Compute weighted projections (Fessler Book Eq. (3.10.6))
 weightFunction = param.DSO ./ sqrt((param.DSD.^2)+(vCoord.^2)+(uCoord.^2));
@@ -88,11 +77,7 @@ H_filter = filter_window(ramp_kernel, h_Length, cutoff);
 H_filter = repmat(H_filter',1,param.nu);
 
 % Proj in freq domain
-if(gpuprocess == 0)
-    H_proj = (zeros(h_Length,param.nu,'single'));
-else
-    H_proj = (zeros(h_Length,param.nu,'single','gpuArray'));
-end
+H_proj = (zeros(h_Length,param.nu,'single'));
 
 % Filter each projection
 for i=1:param.nProj
@@ -121,14 +106,8 @@ Reference: Fessler Book Eq.(3.4.14)
 %}
 function h = ramp_builder(h_Length)
 
-global gpuprocess
-
 n = (-(h_Length/2):(h_Length/2-1));
-if(gpuprocess == 0)
-    h = zeros(size(n),'single');
-else
-    h = zeros(size(n),'single','gpuArray');
-end
+h = zeros(size(n),'single');
 h(h_Length/2+1) = 1/4;  % Eq. 3.29
 odd = mod(n,2) == 1;    % Eq. 3.29
 h(odd) = -1 ./ (pi * n(odd)).^2; % Eq. 3.29

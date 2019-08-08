@@ -38,8 +38,6 @@
 %% Save data
 function saveData(dataRecon3d,varargin)
 
-global gpuprocess
-
 optionals = {[],[],[],[]}; % placeholder for inputs
 
 numInputs = nargin - 1; % Minus number of required inputs
@@ -68,17 +66,12 @@ end
 % Some more informations to save
 for k=1:size(dataRecon3d,2)
     info = dataRecon3d{2,k};
-    if(gpuprocess)
-        info.GPU = 'True';
-    else
-        info.GPU = 'False';
-    end
     info.Title = title;
     dataRecon3d{2,k} = info;
 end
 
 
-filestring = [folder,filesep,title,filesep,'Recon',info.reconMeth,int2str(gpuprocess)];
+filestring = [folder,filesep,title,filesep,'Recon',info.reconMeth];
 
 if(~isempty(infoDicom))
     writeDicom(dataRecon3d,infoDicom,filestring,info.reconMeth,parameter);

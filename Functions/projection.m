@@ -45,7 +45,7 @@
 %% Projection Code
 function proj = projection(data3d,param,projNumber)
 
-global gpuprocess animation
+global animation
 
 % Get parameters from struct
 DSR = param.DSR;
@@ -71,18 +71,11 @@ else
 end
 
 % Stack of projections
-if(gpuprocess == 1)
-    proj = zeros(param.nv, param.nu, numProjs,'single','gpuArray');
-else
-    proj = zeros(param.nv, param.nu, numProjs,'single');
-end
+proj = zeros(param.nv, param.nu, numProjs,'single');
+
 
 % Detector Coordinate sytem in (mm)
 [uCoord,vCoord] = meshgrid(param.us,param.vs);
-if(gpuprocess == 1)
-    uCoord = gpuArray(uCoord);
-    vCoord = gpuArray(vCoord);
-end
 
 % Object Coordinate sytem in (mm) (just for 3D visualization)
 [xCoord,yCoord] = meshgrid(param.xs,param.ys);

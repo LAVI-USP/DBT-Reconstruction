@@ -40,12 +40,11 @@
 close all;clear;clc
 
 %% Global parameters
-global showinfo saveinfo animation gpuprocess 
+global showinfo saveinfo animation 
 
 showinfo = uint8(1);        % Show projection animation
 saveinfo = uint8(1);        % Save reconstructed volume
 animation = uint8(1);       % Graphical animation
-gpuprocess = uint8(0);      % Processing on GPU
 
 %% GUI - Data decision
 
@@ -130,9 +129,6 @@ else    %   ** Shepp-Logan data **
     end   
 end
 
-if(gpuprocess)
-    fprintf(2,'Processing on GPU \n');
-end
 fprintf('Starting reconstruction \n');
 
 %% Set specific recon parameters
