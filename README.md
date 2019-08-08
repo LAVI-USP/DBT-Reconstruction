@@ -38,6 +38,12 @@ We are pleased with any contributions. Fell free to make any [pull requests](htt
 
 ![Imgur](https://i.imgur.com/R9tB35f.gif?2)
 
+**Speedup with CUDA and OpenMP implementations:**
+
+![Imgur](https://i.imgur.com/PreHXUz.png)
+
+It was reconstructed a volume of 1978x1058x107 voxels. The DD stands for Distance-driven and DDb for Branchless-Distance-driven. 
+
 ## Toolbox manual:
 
 You can download the preliminary version [here](https://drive.google.com/open?id=1djW9QzB8bEjT1KBqStUR0gVOViPc_SO3). I also created a [wiki page](https://github.com/LAVI-USP/DBT-Reconstruction/wiki/Toolbox-Manual) with the manual. Please, send me any advice or correction related to this file.
