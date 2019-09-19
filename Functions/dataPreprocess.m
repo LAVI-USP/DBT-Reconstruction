@@ -48,7 +48,9 @@ parameter_mod = parameter;
 Gap = 20;
 meanSlideW = 251;
 
-vertProj = sum(abs(single(2^parameter_mod.bitDepth-1)-data(:,:,5)));	% Horizontal Profile
+maxValue = single(max(max(data(:,:,5))));
+
+vertProj = sum(abs(maxValue-data(:,:,5)));	% Horizontal Profile
 [~,Ind] = max(diff(movmean(vertProj,meanSlideW)));		% Smooth the signal and takes its max positive derivative
 Ind = Ind-meanSlideW-Gap;	% Subtract the ind found to a gap
 
