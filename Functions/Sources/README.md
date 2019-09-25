@@ -1,4 +1,4 @@
-# Compiling mex/mex-CUDA files
+# Compiling mex/mex-CUDA files (Windows)
 
 If you want to compile mex-CUDA files, make sure to follow the **(optional)** steps.
 
@@ -8,7 +8,7 @@ If you want to compile mex-CUDA files, make sure to follow the **(optional)** st
 
  2. A CUDA-capable GPU **(optional)**.
  
- 2. Download [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) **(optional)**.
+ 3. Download [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) **(optional)**.
 
 ## How to install?
 
@@ -51,13 +51,52 @@ If you want to compile mex-CUDA files, make sure to follow the **(optional)** st
 
 **Note:** All these codes were developed and tested on:
 
-| Software      | Version     
+| Software      | Version 
 | ------------- |:-------------:
 | MATLAB            | 2017b 
-| Visual Studio IDE | 2019      
-| CUDA Toolkit      | 10.1  
-| GPU               | GeForce GTX 1050 Ti  
-| Windows           | 10     
+| Visual Studio IDE | 2019 
+| CUDA Toolkit      | 10.1 
+| GPU               | GeForce GTX 1050 Ti 
+| Windows           | 10 
+
+# Compiling mex/mex-CUDA files (Linux)
+
+If you want to compile mex-CUDA files, make sure to follow the **(optional)** steps.
+
+## What is necessary?
+
+ 1. A CUDA-capable GPU **(optional)**.
+ 
+ 2. Download [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) ([Tutorial](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)) **(optional)**.
+ 
+ ## How to compile the codes?
+ 
+ 1. Run the _Compile.m_ file.
+ 2. Make sure to set the variable `cudaPath` with your [cuda path](https://stackoverflow.com/a/54953476/8682939) **(optional)**. 
+ 
+ ## How to test?
+ 
+ 1. The **.mexa64** files will be placed on the _Functions_ folder.
+
+ 3. Run the main _Reconstruction.m_ file to get the parameters and to load projections.
+
+ 4. Run the following command to get a simple Back-projection:
+     * `dataRecon3d_mex_CUDA = backprojectionDDb_mex_CUDA(double(dataProj),parameter);`
+
+ 5. You should get something like this:
+
+     > GPU Device 0: "GeForce GTX 1050 Ti" with compute capability 6.1 has 6 Multi-Processors and 4294967296 bytes of global memory
+
+
+**Note:** All these codes were developed and tested on:
+
+| Software      | Version 
+| ------------- |:-------------:
+| MATLAB            | 2017b 
+| CUDA Toolkit      | 10.1 
+| GPU               | GeForce GTX 1050 Ti 
+| Ubuntu            | 19.04 
+ 
 
 ## Having problems?
 
@@ -65,7 +104,7 @@ Please report issues [here](https://github.com/LAVI-USP/DBT-Reconstruction/issue
 
 ---
 
-Laboratory of Computer Vision ([Lavi](http://iris.sel.eesc.usp.br/lavi/))  
-Department of Electrical and Computer Engineering  
-São Carlos School of Engineering, University of São Paulo  
-São Carlos - Brazil  
+Laboratory of Computer Vision ([Lavi](http://iris.sel.eesc.usp.br/lavi/)) 
+Department of Electrical and Computer Engineering 
+São Carlos School of Engineering, University of São Paulo 
+São Carlos - Brazil 
