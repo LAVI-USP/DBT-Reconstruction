@@ -40,8 +40,6 @@
 % =========================================================================
 function [data_mod,parameter_mod] = dataPreprocess(data,parameter)
 
-global noise
-
 parameter_mod = parameter;
 
 %% Segmentation
@@ -61,10 +59,6 @@ parameter_mod.us = (parameter_mod.nu-1:-1:0)*parameter_mod.du;
 
 data_mod = data(:,Ind:end,:);
 
-%% Insert noise in virtual projections
-if(noise)
-    data_mod = insertNoise(data_mod,parameter_mod); % Insert noise in projs
-end
 
 %% Transform intensity image in attenuation coefficients
 data_mod = -log(data_mod./single(2^parameter_mod.bitDepth-1));

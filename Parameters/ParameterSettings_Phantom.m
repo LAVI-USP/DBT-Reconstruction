@@ -90,9 +90,4 @@ parameter.jROI = 1:parameter.nx;
 
 % Bit number quatization
 parameter.bitDepth = 1;
-
-% Noise parameters
-parameter.tau = -2;  
-parameter.lambda = 0.2;
-parameter.sigmaE = 3;
  
