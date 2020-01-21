@@ -125,7 +125,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
 			"First argument needs to have the same number of columns as in the configuration file.");
 	}
 
-	// Cast double vectors to single 
+	// Cast single vectors to double 
 	double* const pTubeAngle = (double*)mxMalloc(nProj * sizeof(double));
 	double* const pDetAngle = (double*)mxMalloc(nProj * sizeof(double));
 
@@ -176,7 +176,7 @@ void projectionDDb(double* const pProj,
 
 	nThreads = omp_get_max_threads();
 
-	mexPrintf("CPU running with maximum number of thrreads: %d \n", nThreads);
+	mexPrintf("CPU running with maximum number of threads: %d \n", nThreads);
 	
 	clock_t time;
 
@@ -281,7 +281,7 @@ void projectionDDb(double* const pProj,
 
 	// Integrate on I direction
 	for (int nz = 0; nz < nSlices; nz++) 
-		#pragma omp parallel for num_threads(nThreads) schedule(runtime)
+		#pragma omp parallel for num_threads(nThreads) schedule(static)
 		for (int x = 0; x < nPixX; x++){
 			double sum = 0;
 			for (int y = 0; y < nPixY; y++){
@@ -289,15 +289,15 @@ void projectionDDb(double* const pProj,
 				pVolumet[(nz*nPixYMap *nPixXMap) + ((x+1)*nPixYMap) + y + 1] = sum;
 			}
 		}
-	
+
 	// Integrate on J direction
 	for (int nz = 0; nz < nSlices; nz++) 	
-		#pragma omp parallel for num_threads(nThreads) schedule(runtime)
+		#pragma omp parallel for num_threads(nThreads) schedule(static)
 		for (int y = 1; y < nPixYMap; y++) 
 			for (int x = 2; x < nPixXMap; x++) 
 				pVolumet[(nz*nPixYMap *nPixXMap) + (x*nPixYMap) + y] += pVolumet[(nz*nPixYMap *nPixXMap) + ((x - 1)*nPixYMap) + y];	
 
-	
+
 
 	// For each projection
 	for (int p = 0; p < nProj; p++) {
@@ -424,7 +424,7 @@ void mapDet2Slice(double* const pXmapp,
 	#pragma omp parallel num_threads(nThreads) 
 	{
 		int ind;
-		#pragma omp for schedule(runtime)
+		#pragma omp for schedule(static)
 			for (int x = 0; x < nXelem; x++)
 				for (int y = 0; y < nYelem; y++) {
 
@@ -489,18 +489,18 @@ void bilinear_interpolation(double* projI,
 
 		double d00, d01, d10, d11;
 
-		#pragma omp for schedule(runtime) 
+		#pragma omp for schedule(static) 
 		for (int x = 0; x < nDetXMap; x++)
 			for (int y = 0; y < nDetYMap; y++) {
 
 				// Adjust the mapped coordinates to cross the range of (0-nPixX).*dx 
-				//  Divide by pixelSize to get a unitary pixel size
+				// Divide by pixelSize to get a unitary pixel size
 				xNormData = PixXbound - pDetmX[x * nDetYMap + y] / pixelSize;
 				xData = (signed int)floor(xNormData);
 				alpha = xNormData - xData;
 
 				// Adjust the mapped coordinates to cross the range of (0-nPixY).*dy  
-				//  Divide by pixelSize to get a unitary pixel size
+				// Divide by pixelSize to get a unitary pixel size
 				yNormData = (PixYbound / 2.0) + (pDetmY[y] / pixelSize);
 				yData = (signed int)floor(yNormData);
 				beta = yNormData - yData;
@@ -585,7 +585,7 @@ void differentiation(double* pProj,
 
 		double dA, dB, dC, dD;
 
-		#pragma omp for schedule(runtime)
+		#pragma omp for schedule(static)
 		for (int x = 0; x < nDetX; x++)
 			for (int y = 0; y < nDetY; y++) {
 

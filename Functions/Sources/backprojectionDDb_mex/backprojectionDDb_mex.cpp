@@ -125,7 +125,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
 			"First argument needs to have the same number of columns as in the configuration file.");
 	}
 
-	// Cast double vectors to single 
+	// Cast single vectors to double
 	double* const pTubeAngle = (double*)mxMalloc(nProj * sizeof(double));
 	double* const pDetAngle = (double*)mxMalloc(nProj * sizeof(double));
 
@@ -174,7 +174,7 @@ void backprojectionDDb(double* const pVolume,
 
 	nThreads = omp_get_max_threads();
 
-	mexPrintf("CPU running with maximum number of thrreads: %d \n", nThreads);
+	mexPrintf("CPU running with maximum number of threads: %d \n", nThreads);
 	
 	clock_t time;
 
@@ -279,7 +279,7 @@ void backprojectionDDb(double* const pVolume,
 
 	// Integrate on I direction
 	for (int p = 0; p < nProj; p++) 
-		#pragma omp parallel for num_threads(nThreads) schedule(runtime)
+		#pragma omp parallel for num_threads(nThreads) schedule(static)
 		for (int x = 0; x < nDetX; x++){
 			double sum = 0;
 			for (int y = 0; y < nDetY; y++){
@@ -290,7 +290,7 @@ void backprojectionDDb(double* const pVolume,
 	
 	// Integrate on J direction
 	for (int p = 0; p < nProj; p++) 	
-		#pragma omp parallel for num_threads(nThreads) schedule(runtime)
+		#pragma omp parallel for num_threads(nThreads) schedule(static)
 		for (int y = 1; y < nDetYMap; y++) 
 			for (int x = 2; x < nDetXMap; x++) 
 				pProjt[(p*nDetYMap *nDetXMap) + (x*nDetYMap) + y] += pProjt[(p*nDetYMap *nDetXMap) + ((x - 1)*nDetYMap) + y];
@@ -423,7 +423,7 @@ void mapDet2Slice(double* const pXmapp,
 	#pragma omp parallel num_threads(nThreads) 
 	{
 		int ind;
-		#pragma omp for schedule(runtime)
+		#pragma omp for schedule(static)
 			for (int x = 0; x < nXelem; x++)
 				for (int y = 0; y < nYelem; y++) {
 
@@ -490,7 +490,7 @@ void bilinear_interpolation(double* pSliceI,
 
 		double d00, d01, d10, d11;
 
-		#pragma omp for schedule(runtime) 
+		#pragma omp for schedule(static) 
 		for (int x = 0; x < nPixXMap; x++)
 			for (int y = 0; y < nPixYMap; y++) {
 
@@ -583,7 +583,7 @@ void differentiation(double* pVolume,
 
 		double dA, dB, dC, dD;
 
-		#pragma omp for schedule(runtime)
+		#pragma omp for schedule(static)
 		for (int x = 0; x < nPixX; x++)
 			for (int y = 0; y < nPixY; y++) {
 
