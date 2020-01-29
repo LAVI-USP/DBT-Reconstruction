@@ -17,6 +17,8 @@ Open source reconstruction toolbox for digital breast tomosynthesis
  
  4. If you don't want to bother with these steps, you might want to run the toolbox on [Codeocean](https://codeocean.com/capsule/1859673/).
 
+ 5. Finally, you can find the DBT toolbox **Python version** [here](https://github.com/LAVI-USP/pyDBT). 
+
 Please report issues [here](https://github.com/LAVI-USP/DBT-Reconstruction/issues).
 
 ## Contribute? 
