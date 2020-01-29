@@ -479,45 +479,35 @@ void bilinear_interpolation(double* projI,
 	const double PixXbound = (double) (nPixXMap - 1);
 	const double PixYbound = (double) (nPixYMap - 1);
 
-	#pragma omp parallel num_threads(nThreads) 
-	{
-		double result_temp1, result_temp2;
+	#pragma omp parallel for num_threads(nThreads) schedule(static) 
+	for (int x = 0; x < nDetXMap; x++)
+		for (int y = 0; y < nDetYMap; y++) {
 
-		double xNormData, yNormData;
-		signed int xData, yData;
-		double  alpha, beta;
+			// Adjust the mapped coordinates to cross the range of (0-nPixX).*dx 
+			// Divide by pixelSize to get a unitary pixel size
+			double xNormData = PixXbound - pDetmX[x * nDetYMap + y] / pixelSize;
+			signed int xData = (signed int)floor(xNormData);
+			double alpha = xNormData - xData;
 
-		double d00, d01, d10, d11;
+			// Adjust the mapped coordinates to cross the range of (0-nPixY).*dy  
+			// Divide by pixelSize to get a unitary pixel size
+			double yNormData = (PixYbound / 2.0) + (pDetmY[y] / pixelSize);
+			signed int yData = (signed int)floor(yNormData);
+			double beta = yNormData - yData;
 
-		#pragma omp for schedule(static) 
-		for (int x = 0; x < nDetXMap; x++)
-			for (int y = 0; y < nDetYMap; y++) {
+			double d00, d01, d10, d11;
+			if (((xNormData) >= 0) && ((xNormData) <= PixXbound) && ((yNormData) >= 0) && ((yNormData) <= PixYbound))	d00 = pVolume[(nz*nPixYMap*nPixXMap) + (xData*nPixYMap + yData)];					else    d00 = 0.0;
+			if (((xData + 1) > 0) && ((xData + 1) <= PixXbound) && ((yNormData) >= 0) && ((yNormData) <= PixYbound))	d10 = pVolume[(nz*nPixYMap*nPixXMap) + ((xData + 1)*nPixYMap + yData)]; 			else    d10 = 0.0;
+			if (((xNormData) >= 0) && ((xNormData) <= PixXbound) && ((yData + 1) > 0) && ((yData + 1) <= PixYbound))	d01 = pVolume[(nz*nPixYMap*nPixXMap) + (xData*nPixYMap + yData + 1)]; 				else    d01 = 0.0;
+			if (((xData + 1) > 0) && ((xData + 1) <= PixXbound) && ((yData + 1) > 0) && ((yData + 1) <= PixYbound))		d11 = pVolume[(nz*nPixYMap*nPixXMap) + ((xData + 1)*nPixYMap + yData + 1)];			else    d11 = 0.0;
 
-				// Adjust the mapped coordinates to cross the range of (0-nPixX).*dx 
-				// Divide by pixelSize to get a unitary pixel size
-				xNormData = PixXbound - pDetmX[x * nDetYMap + y] / pixelSize;
-				xData = (signed int)floor(xNormData);
-				alpha = xNormData - xData;
+			double result_temp1 = alpha * d10 + (-d00 * alpha + d00);
+			double result_temp2 = alpha * d11 + (-d01 * alpha + d01);
 
-				// Adjust the mapped coordinates to cross the range of (0-nPixY).*dy  
-				// Divide by pixelSize to get a unitary pixel size
-				yNormData = (PixYbound / 2.0) + (pDetmY[y] / pixelSize);
-				yData = (signed int)floor(yNormData);
-				beta = yNormData - yData;
+			projI[x * nDetYMap + y] = beta * result_temp2 + (-result_temp1 * beta + result_temp1);
 
-				if (((xNormData) >= 0) && ((xNormData) <= PixXbound) && ((yNormData) >= 0) && ((yNormData) <= PixYbound))	d00 = pVolume[(nz*nPixYMap*nPixXMap) + (xData*nPixYMap + yData)];					else    d00 = 0.0;
-				if (((xData + 1) > 0) && ((xData + 1) <= PixXbound) && ((yNormData) >= 0) && ((yNormData) <= PixYbound))	d10 = pVolume[(nz*nPixYMap*nPixXMap) + ((xData + 1)*nPixYMap + yData)]; 			else    d10 = 0.0;
-				if (((xNormData) >= 0) && ((xNormData) <= PixXbound) && ((yData + 1) > 0) && ((yData + 1) <= PixYbound))	d01 = pVolume[(nz*nPixYMap*nPixXMap) + (xData*nPixYMap + yData + 1)]; 				else    d01 = 0.0;
-				if (((xData + 1) > 0) && ((xData + 1) <= PixXbound) && ((yData + 1) > 0) && ((yData + 1) <= PixYbound))		d11 = pVolume[(nz*nPixYMap*nPixXMap) + ((xData + 1)*nPixYMap + yData + 1)];			else    d11 = 0.0;
-
-				result_temp1 = alpha * d10 + (-d00 * alpha + d00);
-				result_temp2 = alpha * d11 + (-d01 * alpha + d01);
-
-				projI[x * nDetYMap + y] = beta * result_temp2 + (-result_temp1 * beta + result_temp1);
-
-			}
-	}
-
+		}
+		
 	return;
 }
 

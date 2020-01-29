@@ -480,44 +480,33 @@ void bilinear_interpolation(double* pSliceI,
 
 	*/
 
-	#pragma omp parallel num_threads(nThreads) 
-	{
-		double result_temp1, result_temp2;
+	#pragma omp parallel for num_threads(nThreads) schedule(static) 
+	for (int x = 0; x < nPixXMap; x++)
+		for (int y = 0; y < nPixYMap; y++) {
 
-		double xNormData, yNormData;
-		signed int xData, yData;
-		double  alpha, beta;
+			// Adjust the mapped coordinates to cross the range of (0-nDetX).*duMap 
+			//  Divide by pixelSize to get a unitary pixel size
+			const double xNormData = nDetX - pObjX[x] / pDetmX[0];
+			const signed int xData = (signed int) floor(xNormData);
+			const double  alpha = xNormData - xData;
 
-		double d00, d01, d10, d11;
+			// Adjust the mapped coordinates to cross the range of (0-nDetY).*dyMap  
+			//  Divide by pixelSize to get a unitary pixel size
+			const double yNormData = (pObjY[y] / pDetmX[0]) - (pDetmY[0] / pDetmX[0]);
+			const signed int yData = (signed int) floor(yNormData);
+			const double  beta = yNormData - yData;
 
-		#pragma omp for schedule(static) 
-		for (int x = 0; x < nPixXMap; x++)
-			for (int y = 0; y < nPixYMap; y++) {
+			double d00, d01, d10, d11;
+			if (((xNormData) >= 0) && ((xNormData) <= nDetX) && ((yNormData) >= 0) && ((yNormData) <= nDetY))	d00 = pProj[(np*nDetYMap*nDetXMap) + (xData*nDetYMap + yData)];						else    d00 = 0.0;
+			if (((xData + 1) > 0) && ((xData + 1) <= nDetX) && ((yNormData) >= 0) && ((yNormData) <= nDetY))	d10 = pProj[(np*nDetYMap*nDetXMap) + ((xData + 1)*nDetYMap + yData)]; 				else    d10 = 0.0;
+			if (((xNormData) >= 0) && ((xNormData) <= nDetX) && ((yData + 1) > 0) && ((yData + 1) <= nDetY))	d01 = pProj[(np*nDetYMap*nDetXMap) + (xData*nDetYMap + yData + 1)]; 				else    d01 = 0.0;
+			if (((xData + 1) > 0) && ((xData + 1) <= nDetX) && ((yData + 1) > 0) && ((yData + 1) <= nDetY))		d11 = pProj[(np*nDetYMap*nDetXMap) + ((xData + 1)*nDetYMap + yData + 1)];			else    d11 = 0.0;
 
-				// Adjust the mapped coordinates to cross the range of (0-nDetX).*duMap 
-				//  Divide by pixelSize to get a unitary pixel size
-				const double xNormData = nDetX - pObjX[x] / pDetmX[0];
-				const signed int xData = (signed int) floor(xNormData);
-				const double  alpha = xNormData - xData;
+			double result_temp1 = alpha * d10 + (-d00 * alpha + d00);
+			double result_temp2 = alpha * d11 + (-d01 * alpha + d01);
 
-				// Adjust the mapped coordinates to cross the range of (0-nDetY).*dyMap  
-				//  Divide by pixelSize to get a unitary pixel size
-				const double yNormData = (pObjY[y] / pDetmX[0]) - (pDetmY[0] / pDetmX[0]);
-				const signed int yData = (signed int) floor(yNormData);
-				const double  beta = yNormData - yData;
-
-				double d00, d01, d10, d11;
-				if (((xNormData) >= 0) && ((xNormData) <= nDetX) && ((yNormData) >= 0) && ((yNormData) <= nDetY))	d00 = pProj[(np*nDetYMap*nDetXMap) + (xData*nDetYMap + yData)];						else    d00 = 0.0;
-				if (((xData + 1) > 0) && ((xData + 1) <= nDetX) && ((yNormData) >= 0) && ((yNormData) <= nDetY))	d10 = pProj[(np*nDetYMap*nDetXMap) + ((xData + 1)*nDetYMap + yData)]; 				else    d10 = 0.0;
-				if (((xNormData) >= 0) && ((xNormData) <= nDetX) && ((yData + 1) > 0) && ((yData + 1) <= nDetY))	d01 = pProj[(np*nDetYMap*nDetXMap) + (xData*nDetYMap + yData + 1)]; 				else    d01 = 0.0;
-				if (((xData + 1) > 0) && ((xData + 1) <= nDetX) && ((yData + 1) > 0) && ((yData + 1) <= nDetY))		d11 = pProj[(np*nDetYMap*nDetXMap) + ((xData + 1)*nDetYMap + yData + 1)];			else    d11 = 0.0;
-
-				double result_temp1 = alpha * d10 + (-d00 * alpha + d00);
-				double result_temp2 = alpha * d11 + (-d01 * alpha + d01);
-
-				pSliceI[x * nPixYMap + y] = beta * result_temp2 + (-result_temp1 * beta + result_temp1);
-			}
-	}
+			pSliceI[x * nPixYMap + y] = beta * result_temp2 + (-result_temp1 * beta + result_temp1);
+		}
 
 	return;
 }
