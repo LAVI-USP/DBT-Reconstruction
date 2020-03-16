@@ -52,7 +52,7 @@ if(strcmp(parameter.type,'ge'))
     typecase = 1;
 end
 
-img_list = dir([imgdir,'/*.dcm']);  % List dicom files
+img_list = dir([imgdir,filesep,'*.dcm']);  % List dicom files
 img_count = size(img_list,1);
 
 for i=1:img_count
