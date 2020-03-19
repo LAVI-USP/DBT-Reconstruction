@@ -52,15 +52,15 @@ end
 % Adjust data to save, based on the recon method
 if(strcmp(reconmeth,'BP')||strcmp(reconmeth,'MLEM')||strcmp(reconmeth,'SART')||strcmp(reconmeth,'SIRT'))
     for k=1:size(dataRecon3d,2)
-        dataRecon3d{k} = (2^14-1).*mat2gray(dataRecon3d{k});
-        dataRecon3d{k} = uint16(dataRecon3d{k});
+        dataRecon3d{1,k} = (2^14-1).*mat2gray(dataRecon3d{1,k});
+        dataRecon3d{1,k} = uint16(dataRecon3d{1,k});
     end
 else
     if(strcmp(reconmeth,'FBP'))
         for k=1:size(dataRecon3d,2)
-            dataRecon3d{k} = dataRecon3d{k} + abs(min(dataRecon3d{k}(:)));
-            dataRecon3d{k} = (2^14-1).*mat2gray(dataRecon3d{k});
-            dataRecon3d{k} = uint16(dataRecon3d{k});
+            dataRecon3d{1,k} = dataRecon3d{1,k} + abs(min(dataRecon3d{1,k}(:)));
+            dataRecon3d{1,k} = (2^14-1).*mat2gray(dataRecon3d{1,k});
+            dataRecon3d{1,k} = uint16(dataRecon3d{1,k});
         end
         
     else
@@ -72,9 +72,9 @@ end
 for k=1:size(dataRecon3d,2) 
     filedir = [filestring,filesep,int2str(k)];
     mkdir(filedir)
-    for i=1:size(dataRecon3d{k},3)
+    for i=1:size(dataRecon3d{1,k},3)
         fileimg = [filedir,filesep,num2str(i+dc),'.dcm'];
-        dicomwrite(dataRecon3d{k}(:,:,i), fileimg, infoDicomRecon(:,1), 'CreateMode', 'copy');
+        dicomwrite(dataRecon3d{1,k}(:,:,i), fileimg, infoDicomRecon(:,1), 'CreateMode', 'copy');
     end
 end
 
