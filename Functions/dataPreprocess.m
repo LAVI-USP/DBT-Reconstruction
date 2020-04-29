@@ -52,15 +52,21 @@ vertProj = sum(abs(maxValue-data(:,:,5)));	% Horizontal Profile
 [~,Ind] = max(diff(movmean(vertProj,meanSlideW)));		% Smooth the signal and takes its max positive derivative
 Ind = Ind-meanSlideW-Gap;	% Subtract the ind found to a gap
 
-% Modifies parameters based on segmentation
-parameter_mod.nu = size(vertProj(Ind:end),2);  % Number of pixels (columns)
-parameter_mod.su = parameter.nu.*parameter.du;	
-parameter_mod.us = (parameter_mod.nu-1:-1:0)*parameter_mod.du;
-
 data_mod = data(:,Ind:end,:);
 
+% Modifies parameters based on segmentation
+parameter_mod.nu = size(data_mod,2);    % Number of pixels (columns)
+parameter_mod.nv = size(data_mod,1);    % number of pixels (rows) 
+parameter_mod.su = parameter_mod.nu.*parameter_mod.du;	
+parameter_mod.sv = parameter_mod.nv.*parameter_mod.dv; 
+parameter_mod.us = (parameter_mod.nu-1:-1:0)*parameter_mod.du;
+parameter_mod.vs = (-(parameter_mod.nv-1)/2:1:(parameter_mod.nv-1)/2)*parameter_mod.dv;
 
 %% Transform intensity image in attenuation coefficients
 data_mod = -log(data_mod./single(2^parameter_mod.bitDepth-1));
+
+if(numel(find(data_mod==inf)) ~= 0)
+    error('Numeric error. Please, double-check if you input data has zeros on it')
+end
 
 end
