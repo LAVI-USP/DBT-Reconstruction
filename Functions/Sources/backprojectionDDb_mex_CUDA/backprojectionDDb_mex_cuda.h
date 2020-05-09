@@ -64,6 +64,6 @@ do { \
 } while (0)
 
 
-void backprojectionDDb(double* const h_pVolume, double* const h_pProj, double* const h_pTubeAngle, double* const h_pDetAngle, const unsigned int nProj, const unsigned int nPixX,
+void backprojectionDDb(double* const h_pVolume, double* const h_pProj, double* const h_pTubeAngle, double* const h_pDetAngle, const double idXProj, const unsigned int nProj, const unsigned int nPixX,
 	const unsigned int nPixY, const unsigned int nSlices, const unsigned int nDetX, const unsigned int nDetY, const double dx, const double dy, double dz, const double du,
 	const double dv, const double DSD, const double DDR, const double DAG);

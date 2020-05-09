@@ -17,6 +17,7 @@
 %
 %     - data3d = 3D volume for projection
 %     - param = Parameter of all geometry
+%	  - nProj = projection number to be projected
 %
 %     OUTPUT:
 %
@@ -372,6 +373,7 @@ void projectionDDb(double* const h_pProj,
 	double* const h_pVolume,
 	double* const h_pTubeAngle,
 	double* const h_pDetAngle,
+	const double idXProj,
 	const unsigned int nProj,
 	const unsigned int nPixX,
 	const unsigned int nPixY,
@@ -612,8 +614,19 @@ void projectionDDb(double* const h_pProj,
 
 	}
 
+	// Test if we will loop over all projs or not
+	unsigned int projIni, projEnd;
+	if(idXProj == -1){
+		projIni = 0;
+		projEnd = nProj;
+	}
+	else{
+		projIni = (unsigned int) idXProj;
+		projEnd = (unsigned int) idXProj + 1;
+	}
+
 	// For each projection
-	for (unsigned int p = 0; p < nProj; p++) {
+	for (unsigned int p = projIni; p < projEnd; p++) {
 		
 		// Get specif tube angle for the projection
 		double theta = h_pTubeAngle[p] * M_PI / 180.0;

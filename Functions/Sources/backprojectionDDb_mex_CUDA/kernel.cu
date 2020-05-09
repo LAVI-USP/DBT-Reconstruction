@@ -18,6 +18,7 @@
 %
 %     - proj = 2D projections for each angle
 %     - param = Parameter of all geometry
+%	  - nProj = projection number to be backprojected
 %
 %     OUTPUT:
 %
@@ -387,6 +388,7 @@ void backprojectionDDb(double* const h_pVolume,
 	double* const h_pProj,
 	double* const h_pTubeAngle,
 	double* const h_pDetAngle,
+	const double idXProj,
 	const unsigned int nProj,
 	const unsigned int nPixX,
 	const unsigned int nPixY,
@@ -628,9 +630,23 @@ void backprojectionDDb(double* const h_pVolume,
 	}
 	
 	double* d_pDetmX_tmp = d_pDetmX + (nDetYMap * (nDetXMap-2));
+
+	// Test if we will loop over all projs or not
+	unsigned int projIni, projEnd, nProj2Run;
+	if(idXProj == -1){
+		projIni = 0;
+		projEnd = nProj;
+		nProj2Run = nProj;
+	}
+	else{
+		nProj2Run = 1;
+		projIni = (unsigned int) idXProj;
+		projEnd = (unsigned int) idXProj + 1;
+	}
+	
 	
 	// For each projection
-	for (unsigned int p = 0; p < nProj; p++) {
+	for (unsigned int p = projIni; p < projEnd; p++) {
 	
 		// Get specif tube angle for the projection
 		double theta = h_pTubeAngle[p] * M_PI / 180.0;
@@ -778,7 +794,7 @@ void backprojectionDDb(double* const h_pVolume,
 	blockSize.y = (nPixX / threadsPerBlock.y) + 1;
 	blockSize.z = (nSlices / threadsPerBlock.z) + 1;
 
-	division_kernel << <blockSize, threadsPerBlock >> > (d_pVolume, nPixX, nPixY, nSlices, nProj);
+	division_kernel << <blockSize, threadsPerBlock >> > (d_pVolume, nPixX, nPixY, nSlices, nProj2Run);
 
 	//double* const h_var1 = (double*)mxMalloc(1 * sizeof(double));
 	//cudaMemcpy((void *)h_var1, (void *)d_pDetmX_tmp, 1 * sizeof(double), cudaMemcpyDeviceToHost);

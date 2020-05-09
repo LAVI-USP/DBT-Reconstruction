@@ -17,6 +17,7 @@
 %
 %     - data3d = 3D volume for projection
 %     - param = Parameter of all geometry
+%	  - nProj = projection number to be projected
 %
 %     OUTPUT:
 %
@@ -67,9 +68,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
 
 	/* Check for proper number of arguments */
-	if (nrhs != 2) {
+	if (nrhs != 3) {
 		mexErrMsgIdAndTxt("MATLAB:mexcpp:nargin",
-			"projection_mex requires two input arguments.");
+			"projection_mex requires three input arguments.");
 	}
 	if (nlhs != 1) {
 		mexErrMsgIdAndTxt("MATLAB:mexcpp:nargout",
@@ -84,6 +85,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
 	if (!mxIsStruct(prhs[1])) {
 		mexErrMsgIdAndTxt("MATLAB:mexcpp:typeargin",
 			"Second argument has to be a struct.");
+	}
+	if (!mxIsDouble(prhs[2])) {
+		mexErrMsgIdAndTxt("MATLAB:mexcpp:typeargin",
+			"Third argument has to be double.");
 	}
 
 	double* const pVolume = (double*)(mxGetPr(prhs[0])); 
@@ -109,6 +114,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
 	const double DDR = (const double)mxGetScalar(mxGetField(prhs[1], 0, "DDR"));
 	const double DAG = (const double)mxGetScalar(mxGetField(prhs[1], 0, "DAG"));
 
+	const double idXProj = (const double)mxGetScalar(prhs[2]);
+
 	mwSize NRow = mxGetM(prhs[0]);
 	mwSize NCol = mxGetN(prhs[0]);
 	mwSize NElemVol = mxGetNumberOfElements(prhs[0]);
@@ -122,6 +129,11 @@ void mexFunction(int nlhs, mxArray *plhs[],
 	if (NCol/nSlices != nPixX) {
 		mexErrMsgIdAndTxt("MATLAB:mexcpp:typeargin",
 			"First argument needs to have the same number of columns as in the configuration file.");
+	}
+
+	if (idXProj >= nProj ){
+		mexErrMsgIdAndTxt("MATLAB:mexcpp:typeargin",
+			"Third argument needs to be less than the proj number (0->nproj-1)");
 	}
 
 	// Cast double vectors to single 
@@ -141,7 +153,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
 	plhs[0] = mxCreateNumericArray(3, dims, mxDOUBLE_CLASS, mxREAL);
 	double* const pProj = (double*)mxGetData(plhs[0]);
 
-	projectionDDb(pProj, pVolume, pTubeAngle, pDetAngle, nProj, nPixX, nPixY, nSlices, nDetX, nDetY, dx, dy, dz, du, dv, DSD, DDR, DAG);
+	projectionDDb(pProj, pVolume, pTubeAngle, pDetAngle, idXProj, nProj, nPixX, nPixY, nSlices, nDetX, nDetY, dx, dy, dz, du, dv, DSD, DDR, DAG);
 
 	mxFree(pTubeAngle);
 	mxFree(pDetAngle);

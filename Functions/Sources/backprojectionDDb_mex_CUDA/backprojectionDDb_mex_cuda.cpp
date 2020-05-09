@@ -18,6 +18,7 @@
 %
 %     - proj = 2D projections for each angle
 %     - param = Parameter of all geometry
+%	  - nProj = projection number to be backprojected
 %
 %     OUTPUT:
 %
@@ -68,9 +69,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
 
 	/* Check for proper number of arguments */
-	if (nrhs != 2) {
+	if (nrhs != 3) {
 		mexErrMsgIdAndTxt("MATLAB:mexcpp:nargin",
-			"backprojection_mex requires two input arguments.");
+			"backprojection_mex requires three input arguments.");
 	}
 	if (nlhs != 1) {
 		mexErrMsgIdAndTxt("MATLAB:mexcpp:nargout",
@@ -85,6 +86,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
 	if (!mxIsStruct(prhs[1])) {
 		mexErrMsgIdAndTxt("MATLAB:mexcpp:typeargin",
 			"Second argument has to be a struct.");
+	}
+	if (!mxIsDouble(prhs[2])) {
+		mexErrMsgIdAndTxt("MATLAB:mexcpp:typeargin",
+			"Third argument has to be double.");
 	}
 
 	double* const pProj = (double*)(mxGetPr(prhs[0])); // This variable has to come as single/double
@@ -110,6 +115,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
 	const double DDR = (const double)mxGetScalar(mxGetField(prhs[1], 0, "DDR"));
 	const double DAG = (const double)mxGetScalar(mxGetField(prhs[1], 0, "DAG"));
 
+	const double idXProj = (const double)mxGetScalar(prhs[2]);
+
 	mwSize NRow = mxGetM(prhs[0]);
 	mwSize NCol = mxGetN(prhs[0]);
 	mwSize NElemVol = mxGetNumberOfElements(prhs[0]);
@@ -123,6 +130,11 @@ void mexFunction(int nlhs, mxArray *plhs[],
 	if (NCol / nProj != nDetX) {
 		mexErrMsgIdAndTxt("MATLAB:mexcpp:typeargin",
 			"First argument needs to have the same number of columns as in the configuration file.");
+	}
+
+	if (idXProj >= nProj ){
+		mexErrMsgIdAndTxt("MATLAB:mexcpp:typeargin",
+			"Third argument needs to be less than the proj number (0->nproj-1)");
 	}
 
 	// Cast double vectors to single 
@@ -143,7 +155,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
 	plhs[0] = mxCreateNumericArray(3, dims, mxDOUBLE_CLASS, mxREAL);
 	double* const pVolume = (double*)mxGetData(plhs[0]);
 
-	backprojectionDDb(pVolume, pProj, pTubeAngle, pDetAngle, nProj, nPixX, nPixY, nSlices, nDetX, nDetY, dx, dy, dz, du, dv, DSD, DDR, DAG);
+	backprojectionDDb(pVolume, pProj, pTubeAngle, pDetAngle, idXProj, nProj, nPixX, nPixY, nSlices, nDetX, nDetY, dx, dy, dz, du, dv, DSD, DDR, DAG);
 
 	mxFree(pTubeAngle);
 	mxFree(pDetAngle);
