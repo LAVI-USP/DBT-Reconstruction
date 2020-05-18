@@ -1,3 +1,5 @@
+[![Python Version](https://upload.wikimedia.org/wikipedia/commons/f/fc/Blue_Python_3.7_Shield_Badge.svg)](https://github.com/LAVI-USP/pyDBT) [![View LAVI DBT-Reconstruction on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/71138-lavi-dbt-reconstruction)   [![Open in Code Ocean](https://codeocean.com/codeocean-assets/badge/open-in-code-ocean.svg)](https://codeocean.com/capsule/1859673/) 
+
 Open source reconstruction toolbox for digital breast tomosynthesis
 ======
 
