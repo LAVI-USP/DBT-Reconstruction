@@ -25,7 +25,7 @@ Please report issues [here](https://github.com/LAVI-USP/DBT-Reconstruction/issue
 
 ## Contribute? 
 
-We are pleased with any contributions. Fell free to make any [pull requests](https://github.com/LAVI-USP/DBT-Reconstruction/pulls) or send us an e-mail.
+We are pleased with any contributions. Feel free to make any [pull requests](https://github.com/LAVI-USP/DBT-Reconstruction/pulls) or send us an e-mail.
 
 
 ## Some results:
@@ -56,7 +56,7 @@ You can download the preliminary version [here](https://drive.google.com/open?id
 
 ## Contact:
 
-If you have any question or suggestion, please send us an e-mail:
+If you have any questions or suggestions, please send us an e-mail:
 
 - Rodrigo - rodrigo dot vimieiro at gmail dot com
 - Marcelo - mvieira at sc dot usp dot br
@@ -85,4 +85,3 @@ Laboratory of Computer Vision ([Lavi](http://iris.sel.eesc.usp.br/lavi/))
 Department of Electrical and Computer Engineering  
 São Carlos School of Engineering, University of São Paulo  
 São Carlos - Brazil
-
